@@ -1,210 +1,269 @@
-ICFT
+# ICFT
 
-A programmable crypto-credit protocol that transforms crypto collateral into flexible, automated and programmable liquidity.
+> Programmable Credit Infrastructure for Crypto
 
-Overview
+ICFT is a decentralized crypto-credit protocol designed to transform crypto collateral into flexible, automated, and programmable liquidity.
 
-ICFT is a decentralized crypto lending protocol designed to provide users with access to liquidity without requiring them to sell their existing crypto assets.
+The protocol allows users to deposit supported crypto assets as collateral and borrow ICFT against their collateral. Borrowed ICFT can then be exchanged for USDT or other supported crypto assets through decentralized liquidity markets.
 
-The core concept is simple: users can deposit supported crypto assets as collateral, borrow ICFT against that collateral, and exchange the borrowed ICFT for USDT or other supported crypto assets through decentralized liquidity markets.
+The core idea is to provide liquidity without requiring users to sell crypto assets they already own.
 
-This allows users to access liquidity while maintaining exposure to the assets they already hold.
+For example, a user may hold ETH because they believe its value will increase over time. Selling ETH would provide liquidity, but it would also reduce the user's exposure to ETH. With ICFT, the user can deposit ETH as collateral, borrow ICFT against it, exchange the borrowed ICFT for USDT or another supported asset, use the obtained liquidity, and later acquire ICFT to repay the loan and unlock the collateral.
 
-For example, a user may hold ETH because they believe its long-term value will increase. Selling ETH would provide immediate liquidity, but it would also reduce the user’s exposure to ETH.
+ICFT initially focuses on decentralized crypto lending and is designed to evolve into broader programmable financial infrastructure.
 
-With ICFT, the user can instead deposit ETH as collateral, borrow ICFT, exchange ICFT for the liquidity they need, use that liquidity, and later acquire ICFT to repay the debt and unlock their collateral.
+---
 
-The initial focus of ICFT is decentralized crypto lending. Over time, the protocol is designed to evolve toward programmable credit infrastructure, where users can define automated rules for managing their collateralized positions.
+## The Problem
 
-The Problem
+Crypto holders often face a fundamental trade-off between maintaining exposure to their assets and obtaining liquidity.
 
-Crypto holders frequently face a trade-off between maintaining exposure to their assets and obtaining liquidity.
+A user may hold BTC, ETH, SOL, or another crypto asset while simultaneously needing liquidity.
 
-A user may own BTC, ETH, SOL, or other supported crypto assets but still need liquidity for another purpose.
+The traditional solution is to sell the asset:
 
-The traditional solution is to sell the asset.
+Crypto asset → Sell → USDT → Liquidity
 
-Hold ETH → Need liquidity → Sell ETH → Receive USDT → Lose part of ETH exposure.
+However, selling the asset means losing exposure to its future price movement.
 
-Crypto lending provides an alternative:
+Crypto lending provides another option:
 
-Hold ETH → Deposit ETH as collateral → Borrow against ETH → Receive liquidity → Maintain ETH exposure.
+Crypto asset → Collateral → Credit → Liquidity
 
 ICFT is designed around this second model.
 
-The ICFT Approach
+Instead of selling an asset, users can use it as collateral to access liquidity while maintaining ownership of the underlying asset as long as the borrowing position remains healthy.
 
-ICFT converts supported crypto collateral into access to programmable credit.
+---
 
-The basic process is:
+## How ICFT Works
 
-Crypto Collateral → Collateral Vault → Risk Assessment → ICFT Credit → ICFT/USDT or other liquidity → User receives liquidity → Repayment → Collateral Withdrawal.
+The basic ICFT lending process is:
 
-The protocol does not require users to sell their collateral in order to obtain liquidity.
+Crypto Collateral → Collateral Vault → Risk Assessment → ICFT Credit → ICFT/USDT or other market → Liquidity → Repayment → Collateral Withdrawal
 
-Instead, collateral remains locked while the user maintains an outstanding debt position.
+A user deposits a supported crypto asset into the protocol.
 
-Core Principles
+The protocol evaluates the collateral using decentralized price data and predefined risk parameters.
 
-Non-Custodial
+The user can then borrow ICFT within the permitted borrowing limit.
 
-Users interact with smart contracts rather than relying on centralized custody of their assets.
+The borrowed ICFT can be exchanged for USDT, ETH, BTC, or other supported assets through available liquidity markets.
 
-Collateralized Credit
+When the user wants to close the position, they acquire the required amount of ICFT and repay the outstanding debt.
 
-Borrowing capacity is determined by the value and risk characteristics of the user’s collateral.
+Once the debt and applicable fees have been repaid, the collateral becomes available for withdrawal.
 
-Automated Risk Management
+---
 
-The protocol continuously evaluates positions using predefined risk parameters and decentralized price data.
+## Why ICFT?
 
-Programmable Loans
+ICFT is designed around a simple principle:
 
-Users can eventually define predefined rules for how their loan positions should react to changing market conditions.
+> Users should be able to access liquidity without being forced to sell crypto assets they believe will appreciate.
 
-Automated Liquidation
+The protocol combines:
 
-Unsafe positions can be liquidated automatically according to smart-contract rules.
+- Crypto-backed lending
+- Automated risk management
+- Automated liquidation
+- Decentralized liquidity
+- Programmable loan management
+- Non-custodial asset management
+- Modular DeFi infrastructure
 
-Open Liquidity
+The initial product is lending.
 
-ICFT can interact with decentralized liquidity markets to allow users to exchange borrowed ICFT for other supported assets.
+The long-term objective is to develop a programmable credit infrastructure layer that can support additional financial applications.
 
-How ICFT Works
+---
 
-1. Deposit Collateral
+## Core Architecture
 
-A user connects a compatible Web3 wallet and deposits a supported crypto asset.
+The ICFT protocol is composed of several interconnected components:
 
-For example:
+- Collateral Vault
+- Lending Pool
+- Risk Engine
+- Oracle System
+- Liquidation Engine
+- Liquidity Markets
+- ICFT Token
+- Emergency Controls
+- Programmable Loan Automation Layer
 
-10 ETH
-Market Value: $30,000
+Each component has a specific role in the protocol.
 
-The ETH is transferred into the protocol’s collateral vault.
+The architecture is designed to remain modular so that individual components can be developed, tested, upgraded, and audited independently.
 
-The collateral remains locked while the position is active.
+---
 
-2. Risk Assessment
+## Collateral
 
-The protocol determines how much the user can borrow based on the collateral’s value and risk parameters.
+ICFT is designed to support liquid crypto assets as collateral.
 
-For example:
+Potential collateral assets include:
 
-ETH — Maximum LTV: 70%
-BTC — Maximum LTV: 70%
-SOL — Maximum LTV: 50%
+- ETH
+- BTC representations compatible with the selected EVM environment
+- SOL representations compatible with the selected EVM environment
+- Stablecoins
+- Other liquid crypto assets
+- Potentially tokenized real-world assets in future versions
 
-These parameters can change depending on the protocol’s risk model, liquidity conditions, volatility, and other factors.
+Each collateral asset can have its own risk parameters.
 
-Loan-to-Value (LTV)
+For example, highly liquid and established assets can have different borrowing limits and liquidation thresholds compared with more volatile or less liquid assets.
 
-LTV is one of the most important risk metrics in the ICFT protocol.
+The protocol does not need to treat every asset equally.
 
-LTV represents the relationship between outstanding debt and collateral value.
+---
+
+## Collateral Vault
+
+The Collateral Vault is responsible for managing user collateral positions.
+
+It handles:
+
+- Collateral deposits
+- Collateral balances
+- User positions
+- Withdrawal restrictions
+- Collateral-to-debt relationships
+- Interaction with the liquidation mechanism
+
+A simplified structure is:
+
+User Wallet → Collateral Vault → User Position → Risk Engine
+
+While a borrowing position is active, the corresponding collateral remains locked by the protocol's smart contracts.
+
+---
+
+## Lending Pool
+
+The Lending Pool represents the core credit and liquidity layer of the protocol.
+
+It manages the mechanisms required for borrowing and repayment and can interact with:
+
+- Borrower positions
+- Liquidity providers
+- Protocol reserves
+- Interest accounting
+- Risk parameters
+- Liquidation mechanisms
+
+The exact capital utilization and pool architecture may evolve during development and testing.
+
+---
+
+## Loan-to-Value (LTV)
+
+LTV is one of the primary risk parameters used by ICFT.
+
+LTV represents the relationship between the user's debt and the value of their collateral.
 
 LTV = Debt / Collateral Value × 100%
 
 For example:
 
-Collateral: $100,000
+Collateral Value: $100,000
+
 Debt: $50,000
+
 LTV: 50%
 
-If the collateral falls in value while the debt remains unchanged, the LTV increases.
+If the collateral decreases in value while the debt remains unchanged, the LTV increases.
 
 For example:
 
-Collateral: $80,000
+Collateral Value: $80,000
+
 Debt: $50,000
+
 LTV: 62.5%
 
-This means that market movements can directly affect the safety of a borrowing position.
+This allows the protocol to continuously evaluate the risk of a borrowing position.
 
-3. Borrow ICFT
+---
 
-Once the user’s collateral and borrowing capacity have been determined, the user can borrow ICFT.
+## Borrowing
+
+Once collateral has been deposited, the protocol determines the user's borrowing capacity.
 
 For example:
 
 Collateral Value: $100,000
+
 Maximum LTV: 60%
+
 Maximum Borrowing Capacity: $60,000
 
-The user could borrow less than the maximum.
+The user does not have to borrow the maximum amount.
+
+They could instead borrow:
+
+$40,000 ICFT
+
+This would initially create an LTV of:
+
+40%
+
+Borrowing capacity can differ between collateral assets according to protocol-defined risk parameters.
+
+---
+
+## ICFT as the Credit Asset
+
+ICFT is the native credit asset of the initial protocol.
+
+Users borrow ICFT against crypto collateral.
+
+The borrowed ICFT can then be exchanged through supported liquidity markets.
 
 For example:
 
-Borrowed: $40,000 ICFT
-Initial LTV: 40%
+ETH Collateral → ICFT Loan → ICFT/USDT → USDT
 
-The borrowed ICFT is transferred to the user’s wallet.
+Or potentially:
 
-4. Use ICFT
+ETH Collateral → ICFT Loan → ICFT/ETH → ETH
 
-Once ICFT has been received, the user is free to use the tokens.
+This creates a direct relationship between the lending mechanism and the utility of the ICFT token.
 
-For example:
+The objective is for ICFT demand to originate from actual protocol usage rather than relying solely on speculative demand.
 
-ICFT → ICFT/USDT → USDT → BTC/ETH/other assets
+---
 
-The user may also transfer ICFT to another wallet or interact with other compatible applications.
+## Repayment
 
-ICFT therefore acts as the native credit asset of the initial protocol architecture.
+To close a borrowing position, the user must repay the outstanding ICFT debt and applicable fees.
 
-5. Repay the Loan
+The basic process is:
 
-To close the position, the user acquires the required amount of ICFT and repays the outstanding debt.
+User acquires ICFT → Repays debt → Debt becomes zero → Collateral becomes withdrawable
 
-After the debt and applicable fees have been repaid, the collateral becomes available for withdrawal.
+The user can repay the position before the liquidation threshold is reached.
 
-User acquires ICFT → Repay debt → Debt = 0 → Withdraw collateral.
+---
 
-Collateral Architecture
+## Interest
 
-The protocol is designed to support multiple forms of crypto collateral over time.
+Borrowing may accrue interest according to the protocol's interest-rate model.
 
-Potential collateral assets may include ETH, BTC representations compatible with the selected EVM environment, SOL representations compatible with the selected EVM environment, stablecoins, other liquid crypto assets, and potentially tokenized real-world assets in future versions.
-
-Each collateral asset must have its own risk parameters.
-
-The protocol should not treat every asset identically.
-
-A highly liquid and established asset can have significantly different risk parameters from a volatile or illiquid asset.
-
-Collateral Vault
-
-Collateral is stored inside smart-contract-controlled vaults.
-
-The vault architecture is responsible for accepting collateral deposits, tracking user balances, preventing unauthorized withdrawals, linking collateral to debt positions, enforcing withdrawal restrictions while debt exists, and interacting with the liquidation mechanism.
-
-Lending Pool
-
-The Lending Pool is the core liquidity layer of the protocol.
-
-It manages the available liquidity required for borrowing and repayment.
-
-The Lending Pool can interact with borrower positions, protocol reserves, liquidity providers, interest accounting, risk parameters, and liquidation mechanisms.
-
-The exact pool architecture and capital utilization model may evolve during development and testing.
-
-Interest and Debt
-
-Borrowing may accrue interest according to the protocol’s interest-rate model.
-
-A user’s debt can therefore be represented as:
+A user's outstanding debt can therefore be represented as:
 
 Principal + Accrued Interest = Outstanding Debt
 
-The interest model can be designed to respond to utilization and liquidity conditions.
+The interest model may depend on factors such as pool utilization and available liquidity.
 
-For example, higher utilization can result in higher borrowing rates in order to encourage repayment and attract additional liquidity.
+The final interest-rate mechanism will be defined and tested during protocol development.
 
-The final interest-rate model will be determined during protocol development and testing.
+---
 
-Health Factor
+## Health Factor
 
-In addition to LTV, ICFT can use a health metric to determine the safety of a borrowing position.
+ICFT can use a Health Factor to represent the safety of a borrowing position.
 
 A simplified representation is:
 
@@ -214,439 +273,741 @@ Health Factor ≈ 1 — Critical
 
 Health Factor < 1 — Liquidatable
 
-The exact calculation can depend on collateral value, collateral risk parameters, outstanding debt, liquidation threshold, and asset-specific factors.
+The exact formula can depend on:
 
-The purpose of the health metric is to provide a standardized way for the protocol to determine when a position has become unsafe.
+- Collateral value
+- Debt value
+- Liquidation threshold
+- Asset-specific risk parameters
+- Other protocol-defined factors
 
-Automated Liquidation
+The Health Factor provides a simple way for users and automated systems to understand the current state of a position.
 
-If a user’s position becomes undercollateralized, ICFT can automatically initiate liquidation.
+---
 
-For example:
+## Risk Engine
 
-ETH Collateral: $100,000
-Debt: $50,000
-LTV: 50%
+The Risk Engine is responsible for evaluating borrowing positions.
 
-If ETH falls significantly:
+It can calculate and monitor:
 
-ETH Collateral: $62,500
-Debt: $50,000
-LTV: 80%
+- Collateral value
+- Debt value
+- LTV
+- Health Factor
+- Borrowing capacity
+- Liquidation thresholds
+- Asset-specific risk parameters
+- Market conditions
+- Liquidity conditions
 
-If the liquidation threshold is reached, the protocol can begin liquidating the position.
-
-The liquidation mechanism can detect the unsafe position, determine the amount of collateral that needs to be sold, execute the liquidation, exchange collateral for the required debt asset, repay outstanding debt, and return remaining collateral to the user where applicable.
-
-The objective is not necessarily to sell the entire position.
-
-A partial liquidation mechanism can be used to restore a position to a safer risk level while minimizing unnecessary collateral sales.
-
-Liquidation Keepers
-
-Smart contracts cannot independently create blockchain transactions.
-
-Therefore, automated liquidation can use external keepers or automated transaction executors.
-
-The keeper does not decide whether the position should be liquidated.
-
-Instead, it calls the liquidation function, and the smart contract checks whether the liquidation conditions have actually been met.
-
-This prevents an external keeper from arbitrarily liquidating a healthy position.
-
-Liquidation Incentives
-
-Liquidators may receive a predefined liquidation incentive.
-
-The incentive exists to make it economically attractive for participants to execute liquidations when positions become unsafe.
-
-The exact liquidation bonus and mechanism will depend on the protocol’s risk model.
-
-Oracle System
-
-Accurate collateral valuation is critical to the protocol.
-
-ICFT therefore requires reliable price data for supported collateral and debt assets.
-
-The oracle system can provide asset prices, price updates, deviation checks, stale-price protection, and fallback mechanisms where appropriate.
-
-The Risk Engine uses oracle data to calculate collateral value, LTV, health factor, borrowing capacity, and liquidation eligibility.
-
-A manipulation-resistant oracle architecture is a fundamental security requirement for the protocol.
-
-Risk Engine
-
-The Risk Engine is responsible for determining the financial safety of protocol positions.
-
-It can evaluate collateral value, debt value, LTV, health factor, asset volatility, collateral parameters, and liquidity conditions.
-
-The Risk Engine should operate according to predefined rules rather than discretionary manual decisions.
+The Risk Engine operates according to predefined protocol rules.
 
 For example:
 
 ETH Maximum LTV: 70%
-Liquidation Threshold: 80%
-User LTV: 54%
-Position Status: SAFE
 
-If market conditions change:
+Liquidation Threshold: 80%
+
+User LTV: 54%
+
+Position: SAFE
+
+If the value of the collateral decreases:
 
 User LTV: 79%
-Position Status: HIGH RISK
+
+Position: HIGH RISK
 
 If the liquidation threshold is reached:
 
 User LTV: 80%
-Position Status: LIQUIDATABLE
 
-Programmable Loans
+Position: LIQUIDATABLE
 
-One of the long-term innovations planned for ICFT is programmable loan management.
+---
 
-Traditional lending generally follows:
+## Oracle System
 
-Borrow → Monitor manually → Repay manually.
+Accurate asset valuation is essential to a collateralized lending protocol.
 
-ICFT can evolve toward:
+ICFT therefore requires reliable decentralized price data.
 
-Borrow → Define risk rules → Smart Contract monitors position → Automatic actions.
+The Oracle System can provide:
 
-Users could configure predefined actions such as automatic partial repayment, additional collateral deposits, partial liquidation, automated position reduction, and automated debt management.
+- Asset prices
+- Price updates
+- Deviation protection
+- Stale-price protection
+- Market data required by the Risk Engine
+
+Oracle data is used to determine:
+
+- Collateral value
+- LTV
+- Health Factor
+- Borrowing capacity
+- Liquidation eligibility
+
+Oracle security is one of the critical components of the protocol.
+
+---
+
+## Automated Liquidation
+
+Borrowing positions can become unsafe when the value of their collateral falls.
+
+When a position reaches the liquidation threshold, the protocol can automatically initiate liquidation.
 
 For example:
 
-Collateral: ETH
-Loan: 50,000 ICFT
+Collateral: $100,000
 
-If LTV > 60%: attempt partial debt repayment.
+Debt: $50,000
 
-If LTV > 70%: increase risk response.
+LTV: 50%
 
-If liquidation threshold is reached: initiate liquidation.
+If collateral falls to:
 
-Users would configure these options through the ICFT interface rather than directly writing smart-contract code.
+$62,500
 
-Protocol Risk Limits
+while the debt remains:
 
-Programmability does not mean unlimited user control.
+$50,000
+
+the LTV becomes:
+
+80%
+
+If 80% is the liquidation threshold, the position becomes eligible for liquidation.
+
+The liquidation mechanism can:
+
+1. Detect an unsafe position.
+2. Determine the amount of collateral that needs to be liquidated.
+3. Execute the liquidation.
+4. Exchange collateral for the required debt asset.
+5. Repay the outstanding debt.
+6. Return remaining collateral to the user where applicable.
+
+The protocol can use partial liquidation instead of automatically liquidating the entire position.
+
+This allows the system to attempt to restore the position to a safer level while minimizing unnecessary collateral sales.
+
+---
+
+## Liquidation Keepers
+
+Blockchain smart contracts cannot initiate transactions by themselves.
+
+Therefore, ICFT can use external keepers or automated transaction executors to trigger liquidation functions.
+
+The keeper does not decide whether a position is liquidatable.
+
+Instead:
+
+Keeper → Calls liquidation function → Smart Contract verifies conditions → Liquidation executes if conditions are satisfied
+
+The smart contract remains responsible for enforcing the actual liquidation rules.
+
+This prevents an external keeper from arbitrarily liquidating healthy positions.
+
+---
+
+## Liquidation Incentives
+
+Liquidators can receive a predefined incentive for successfully executing liquidations.
+
+The purpose is to create an economic reason for external participants to monitor the protocol and execute liquidations when positions become unsafe.
+
+The exact liquidation incentive will depend on the protocol's risk model.
+
+---
+
+## Partial Liquidation
+
+ICFT can use partial liquidation to reduce unnecessary collateral sales.
+
+Instead of:
+
+Unsafe Position → Sell Everything
+
+the protocol can operate as:
+
+Unsafe Position → Sell Part of Collateral → Repay Part of Debt → Restore Safer LTV
+
+For example:
+
+Initial LTV: 82%
+
+Partial liquidation:
+
+Collateral decreases
+
+Debt decreases
+
+LTV returns below the liquidation threshold
+
+The remaining position stays active.
+
+This can reduce unnecessary losses for borrowers while helping protect the protocol.
+
+---
+
+## Emergency Freeze
+
+ICFT includes an Emergency Freeze mechanism designed to protect the protocol during critical events.
+
+Potential emergency situations include:
+
+- Oracle failure
+- Smart-contract vulnerability
+- Abnormal market conditions
+- Price manipulation
+- Unexpected protocol behavior
+- Critical security incidents
+
+The emergency mechanism can temporarily restrict selected protocol functions while the situation is investigated.
+
+Emergency permissions should be strictly controlled and transparently managed.
+
+---
+
+## Programmable Loan Automation
+
+A long-term direction of ICFT is to introduce an automated loan-management layer.
+
+The goal is not simply to make borrowing programmable, but to allow users to define predefined rules for managing their own credit positions.
+
+For example, a user could configure:
+
+If LTV reaches 60% → automatically repay 10% of the debt.
+
+If LTV reaches 65% → perform another predefined risk-management action.
+
+If LTV reaches 70% → partially liquidate the position.
+
+If the liquidation threshold is reached → protect the position according to the configured strategy or proceed with protocol liquidation rules.
+
+The user would configure these rules through the ICFT application without needing to write Solidity code.
+
+The smart contracts would then execute permitted actions automatically.
+
+---
+
+## Protocol Risk Limits
+
+Programmability does not mean that users can force the protocol to take unlimited risk.
 
 The protocol defines global safety boundaries.
 
-For example, if the protocol’s maximum LTV is 70%, a user cannot configure a maximum LTV of 95%.
+For example:
 
-This creates two layers:
+Protocol Maximum LTV: 70%
 
-Protocol Risk Limits → User-Defined Parameters → Smart Contract Execution
+A user cannot configure:
 
-The user’s strategy can operate only inside the boundaries established by the protocol.
+Maximum LTV: 95%
 
-Self-Healing Positions
+if 95% is outside the protocol's permitted risk parameters.
 
-A future version of ICFT can introduce self-healing loan positions.
+The system therefore has two layers:
 
-Instead of waiting until liquidation becomes unavoidable, the protocol can automatically react to deteriorating positions.
+Protocol Risk Limits → User Strategy → Smart Contract Execution
+
+User-defined strategies operate only inside the safety boundaries established by the protocol.
+
+---
+
+## Self-Healing Positions
+
+A future version of the programmable loan system can introduce self-healing positions.
+
+Instead of waiting until a position becomes liquidatable, the protocol can react to deteriorating risk levels.
 
 For example:
 
-LTV = 55% → Normal
+LTV 55% → Normal
 
-LTV = 60% → Warning
+LTV 60% → Warning
 
-LTV = 65% → Automatic risk action
+LTV 65% → Automatic Risk Action
 
-LTV = 70% → Partial liquidation if required
+LTV 70% → Partial Liquidation if required
 
-The goal is to move away from a binary model where a position is either healthy or liquidated.
+The objective is to create positions that can automatically respond to market movements instead of requiring constant manual monitoring.
 
-Instead, the protocol can continuously manage risk and attempt to preserve healthy positions.
+---
 
-Liquidity
+## Liquidity
 
-Liquidity is essential for ICFT because borrowers must be able to exchange ICFT for other assets.
+Liquidity is essential for ICFT because borrowers need the ability to exchange borrowed ICFT for other assets.
 
-The protocol can support markets such as:
+Potential liquidity markets include:
 
-ICFT/USDT
-ICFT/ETH
-ICFT/BTC
+- ICFT/USDT
+- ICFT/ETH
+- ICFT/BTC
+- Other supported assets
 
-Additional markets may be introduced as liquidity and demand develop.
+The initial market is expected to focus on ICFT/USDT because USDT provides a widely used stable liquidity asset.
 
-Liquidity Providers
+Additional pairs can be introduced as the protocol develops.
 
-External liquidity providers can contribute assets to supported liquidity markets.
+---
 
-For example, liquidity providers can supply USDT to an ICFT/USDT pool.
+## Liquidity Providers
 
-Protocol-controlled ICFT reserves can initially be paired with external USDT liquidity to bootstrap the market.
+External liquidity providers can contribute assets to ICFT liquidity markets.
 
-Liquidity providers can receive trading fees and, where applicable, ICFT-based liquidity incentives.
+For example:
 
-The exact incentive structure will depend on the protocol’s economics and liquidity requirements.
+Liquidity Provider → USDT → ICFT/USDT Pool
 
-Liquidity Bootstrapping
+The protocol can provide ICFT from its allocated reserves while external liquidity providers contribute USDT.
 
-Early-stage protocols face a liquidity problem: users need liquidity to trade ICFT, but liquidity providers need users and trading volume to justify providing liquidity.
+Liquidity providers can potentially receive:
 
-ICFT can address this initially through protocol-controlled reserves.
+- Trading fees
+- ICFT liquidity incentives
+- Other protocol-defined rewards
 
-Protocol ICFT reserves can be paired with external USDT liquidity to create initial ICFT/USDT markets.
+The purpose of the incentive system is to encourage early liquidity and create deeper markets for ICFT.
 
-Over time, the objective is to increase organic liquidity and reduce reliance on protocol-controlled liquidity.
+---
 
-ICFT Token
+## Liquidity Bootstrapping
 
-ICFT is the native asset of the protocol.
+One of the main challenges of a new token is creating sufficient liquidity.
 
-Initial total supply:
+ICFT can initially address this through protocol-controlled ICFT reserves.
+
+For example:
+
+Protocol ICFT Reserves + External USDT Liquidity → ICFT/USDT Pool
+
+This allows the protocol to create an initial market without requiring the protocol treasury to provide all liquidity assets itself.
+
+As the protocol grows, the objective is to attract increasing amounts of organic external liquidity.
+
+---
+
+## ICFT Token
+
+ICFT is the native token and credit asset of the protocol.
+
+Total Supply:
 
 1,000,000,000 ICFT
 
-Initial reference price:
+Initial Reference Price:
 
 $0.50
 
-The token is intended to serve as the native credit and ecosystem asset of the ICFT protocol.
+The token is designed to have utility within the ICFT ecosystem.
 
-Potential utility includes borrowing, lending, liquidity incentives, trading, governance, protocol participation, potential staking or security mechanisms, and future ecosystem functionality.
+Potential functions include:
 
-The exact utility, distribution, vesting schedules, and allocation structure are defined separately in the project’s tokenomics.
+- Lending and borrowing
+- Liquidity incentives
+- Trading
+- Governance
+- Protocol participation
+- Potential staking mechanisms
+- Future ecosystem functionality
 
-ICFT Economic Model
+The exact allocation, vesting, distribution, and utility structure are defined separately in the project's tokenomics.
 
-The protocol’s economic model is designed around several interacting components:
+---
 
-Collateral → Borrowing → ICFT Demand → Liquidity → Trading → Fees → Protocol Economics.
+## ICFT Economic Cycle
 
-Users require ICFT when they use the lending system.
+The long-term economic model is designed around actual protocol usage.
 
-Liquidity providers support the ability to exchange ICFT.
+A simplified cycle is:
 
-Traders create volume and generate fees.
+Crypto Collateral → ICFT Borrowing → ICFT Demand → Liquidity → Trading → Fees → Protocol Economics
 
-The protocol can allocate fees according to its governance and treasury structure.
+Users need ICFT to use the lending system.
 
-The objective is to create an economic cycle in which protocol usage generates sustainable activity rather than relying solely on token speculation.
+Liquidity providers enable ICFT markets.
 
-Protocol-Owned Liquidity
+Trading activity generates fees.
 
-During the early stages, ICFT reserves may be used to bootstrap liquidity.
+The protocol can distribute or allocate protocol revenue according to its economic model and governance structure.
 
-This allows the protocol to create initial markets before sufficient external liquidity exists.
+The objective is to create sustainable utility around ICFT rather than relying exclusively on speculative demand.
 
-Protocol-owned liquidity should be managed transparently and according to predefined rules.
+---
 
-Emergency Freeze
+## Protocol-Owned Liquidity
 
-ICFT can include emergency controls designed to protect users and protocol funds during critical events.
+During the early stages of development, ICFT reserves may be used to bootstrap liquidity.
 
-Potential emergency scenarios include oracle failure, smart-contract vulnerability, abnormal price movement, liquidity manipulation, unexpected protocol behavior, and critical security incidents.
+Protocol-owned ICFT can be paired with external USDT or other assets to establish initial markets.
 
-An emergency pause can temporarily restrict selected protocol functions while the development or governance process investigates and responds.
+This approach allows the protocol to use its existing ICFT allocation to help create the initial liquidity infrastructure.
 
-Emergency controls should be subject to strict permissions and transparent governance.
+Protocol-owned liquidity should be transparently managed and subject to predefined rules.
 
-Security Architecture
+---
 
-Security is a fundamental requirement of ICFT.
+## Future Integrated DEX
 
-The protocol is designed around audited smart contracts, modular contract architecture, access control, oracle protections, LTV limits, liquidation mechanisms, emergency pause functionality, automated testing, testnet deployment, monitoring, bug reporting, and independent security audits before production deployment.
+As the protocol scales, ICFT can expand beyond lending and introduce its own decentralized exchange infrastructure.
 
-No smart-contract system can guarantee zero risk.
+The goal would be to allow users to perform the entire process inside a single application:
 
-The purpose of the security architecture is to reduce technical, economic, oracle, and liquidation risks as much as reasonably possible.
+Deposit Collateral → Borrow ICFT → Exchange ICFT → Receive Asset
 
-Non-Custodial Architecture
+Instead of requiring the user to leave the ICFT ecosystem to access external liquidity.
 
-ICFT is designed as a non-custodial protocol.
+Potential future markets could include:
 
-Users interact directly with smart contracts using compatible Web3 wallets.
+- ICFT/USDT
+- ICFT/ETH
+- ICFT/BTC
+- ICFT/SOL
+- Other supported assets
 
-The protocol does not require users to deposit funds into a centralized exchange or give a centralized entity direct custody of their assets.
+A future DEX could also include:
 
-The smart contracts enforce the rules governing deposits, borrowing, repayments, withdrawals, collateral, and liquidation.
+- Liquidity aggregation
+- Smart routing
+- Multiple liquidity sources
+- Reduced trading friction
+- Native ICFT markets
 
-Future Decentralized Exchange
+The integrated exchange is a future expansion and is not required for the initial Lending MVP.
 
-A future version of ICFT may introduce an integrated decentralized exchange.
+---
 
-The purpose would be to allow users to move directly from collateral to credit to other assets without requiring the user to leave the ICFT interface.
-
-For example:
-
-Collateral → ICFT Loan → ICFT → BTC / ETH / USDT / Other Assets.
-
-The integrated exchange could eventually provide ICFT/USDT, ICFT/ETH, ICFT/BTC, additional crypto markets, liquidity aggregation, optimized routing, and reduced trading friction.
-
-The DEX is considered a later-stage expansion rather than part of the initial Lending MVP.
-
-Future Financial Infrastructure
+## Financial Infrastructure
 
 The long-term vision of ICFT extends beyond lending.
 
-The protocol can evolve toward a broader crypto financial infrastructure consisting of collateral, credit, liquidity, trading, risk management, payments, and programmable financial strategies.
+The protocol can evolve into a broader crypto financial infrastructure layer combining:
 
-Potential future components include universal collateral accounts, programmable credit lines, automated financial strategies, integrated trading, developer SDKs, third-party DeFi integrations, institutional credit infrastructure, tokenized real-world assets, automated risk management, and financial agents.
+Collateral
 
-The objective is not simply to create another lending application, but to build infrastructure that can support additional financial applications over time.
+Credit
 
-Developer Ecosystem
+Liquidity
 
-A long-term goal of ICFT is to allow third-party developers to build applications on top of the protocol.
+Trading
 
-Potential developer interfaces could include functions for depositing collateral, withdrawing collateral, borrowing, repaying, obtaining credit limits, checking health factors, retrieving collateral values, retrieving debt positions, and executing liquidations.
+Risk Management
 
-Developers could eventually use ICFT infrastructure to build crypto credit applications, payment applications, trading interfaces, portfolio management tools, automated financial strategies, institutional products, and other DeFi applications.
+Programmable Loans
 
-This would allow ICFT to evolve from a single application into a broader financial infrastructure layer.
+Payments
 
-Roadmap
+DeFi Integrations
 
-Phase 1 — Lending MVP
+Developer Infrastructure
 
-The first development phase focuses on proving the core lending mechanism.
+The objective is to create an ecosystem where crypto assets can be used not only as investments, but as programmable financial resources.
 
-Planned functionality includes:
+---
 
-* ICFT ERC-20 token
-* Collateral vault
-* Lending pool
-* ETH collateral
-* LTV calculation
-* Interest calculation
-* Borrowing
-* Repayment
-* Collateral withdrawal
-* Oracle integration
-* Risk parameters
-* Liquidation mechanism
-* Emergency pause
-* Basic frontend
-* Web3 wallet integration
-* Testnet deployment
-* Automated tests
+## Developer Ecosystem
 
-The objective of Phase 1 is to validate the fundamental lending architecture and risk model.
+A long-term goal is to allow third-party developers to build applications on top of ICFT.
 
-Phase 2 — Liquidity and Expansion
+Potential developer interfaces could expose functionality such as:
 
-The second phase focuses on increasing the usability of ICFT.
+depositCollateral()
 
-Potential features include:
+withdrawCollateral()
 
-* ICFT/USDT liquidity
-* Additional collateral assets
-* ICFT/ETH market
-* Improved liquidation mechanisms
-* Automated liquidation keepers
-* Liquidity incentives
-* Improved risk engine
-* Portfolio-based collateral
-* Improved user interface
+borrow()
 
-Phase 3 — Programmable Credit
+repay()
 
-The third phase introduces more advanced credit functionality.
+getCreditLimit()
 
-Potential features include:
+getHealthFactor()
 
-* Programmable loan parameters
-* Automated debt management
-* Automated collateral management
-* Credit lines
-* Self-healing positions
-* Advanced risk strategies
-* Automated portfolio actions
-* Additional DeFi integrations
+getCollateralValue()
 
-Phase 4 — ICFT Financial Infrastructure
+getDebt()
 
-The fourth phase focuses on expanding the protocol beyond the original lending application.
+liquidate()
 
-Potential functionality includes:
+Developers could eventually use ICFT infrastructure to create:
 
-* Integrated decentralized exchange
-* Advanced liquidity routing
-* Developer SDK
-* Third-party protocol integrations
-* Institutional lending
-* Additional financial primitives
-* Automated financial agents
-* Tokenized real-world assets
+- Crypto credit applications
+- Payment applications
+- Trading applications
+- Portfolio management tools
+- Automated financial strategies
+- Institutional products
+- DeFi integrations
 
-Technology
+This would allow ICFT to evolve from a single lending application into an infrastructure layer for other applications.
+
+---
+
+## Security
+
+Security is a fundamental requirement of ICFT.
+
+The protocol is designed around:
+
+- Modular smart contracts
+- Access control
+- Oracle protection
+- LTV limits
+- Liquidation mechanisms
+- Emergency controls
+- Automated testing
+- Testnet deployment
+- Monitoring
+- Security reviews
+- Independent audits before production deployment
+
+Potential attack vectors include:
+
+- Smart-contract vulnerabilities
+- Oracle manipulation
+- Reentrancy
+- Access-control failures
+- Price manipulation
+- Flash-loan attacks
+- Liquidation exploits
+- Accounting errors
+- Economic attacks
+- Liquidity attacks
+
+No DeFi protocol can guarantee zero risk.
+
+The purpose of the security architecture is to minimize technical and economic risks as much as reasonably possible.
+
+---
+
+## Non-Custodial Design
+
+ICFT is designed to be non-custodial.
+
+Users interact directly with smart contracts through compatible Web3 wallets.
+
+The protocol does not require users to deposit their funds into a centralized exchange.
+
+The smart contracts enforce the rules governing:
+
+- Deposits
+- Borrowing
+- Repayment
+- Withdrawals
+- Collateral
+- Liquidation
+
+Users remain in control of their wallets and interact with protocol contracts directly.
+
+---
+
+## Technology
 
 ICFT is being designed for EVM-compatible blockchain infrastructure.
 
-The initial technical stack includes:
+The initial technology stack includes:
 
-* Solidity
-* EVM-compatible smart contracts
-* ERC-20
-* Decentralized oracle infrastructure
-* Web3 wallets
-* Decentralized liquidity
-* Automated testing
-* Frontend Web3 integration
+- Solidity
+- EVM-compatible smart contracts
+- ERC-20
+- Decentralized oracle infrastructure
+- Web3 wallets
+- Decentralized liquidity
+- Automated testing
+- Web3 frontend infrastructure
 
-The final blockchain deployment and infrastructure architecture may evolve during development and testing.
+The exact blockchain deployment and infrastructure architecture may evolve during development and testing.
 
-Project Status
+---
+
+## Roadmap
+
+### Phase 1 — Lending MVP
+
+The first stage focuses on validating the core lending mechanism.
+
+Planned functionality:
+
+- ICFT ERC-20 token
+- Collateral Vault
+- Lending Pool
+- ETH collateral
+- LTV calculation
+- Interest calculation
+- Borrowing
+- Repayment
+- Collateral withdrawal
+- Oracle integration
+- Risk parameters
+- Liquidation mechanism
+- Emergency Freeze
+- Basic frontend
+- Wallet integration
+- Testnet deployment
+- Automated tests
+
+The main objective is to prove that the fundamental lending architecture works safely.
+
+### Phase 2 — Liquidity and Expansion
+
+The second stage focuses on making ICFT more usable.
+
+Potential functionality:
+
+- ICFT/USDT liquidity
+- Additional collateral assets
+- ICFT/ETH market
+- Improved liquidation
+- Automated liquidation keepers
+- Liquidity incentives
+- Improved Risk Engine
+- Portfolio-based collateral
+- Improved user interface
+
+### Phase 3 — Programmable Credit
+
+The third stage introduces automated loan management.
+
+Potential functionality:
+
+- Programmable loan parameters
+- Automated debt management
+- Automated collateral management
+- Credit lines
+- Self-healing positions
+- Advanced risk strategies
+- Automated portfolio actions
+- Additional DeFi integrations
+
+### Phase 4 — Financial Infrastructure
+
+The fourth stage focuses on expanding ICFT beyond lending.
+
+Potential functionality:
+
+- Integrated DEX
+- Advanced liquidity routing
+- Developer SDK
+- Third-party integrations
+- Institutional lending
+- Additional financial primitives
+- Automated financial agents
+- Tokenized real-world assets
+
+---
+
+## Project Status
 
 ICFT is currently an early-stage project under active development.
 
 The immediate objective is to build and test the Lending MVP.
 
-The initial priority is not to launch every planned feature simultaneously.
+The project is intentionally being developed incrementally.
 
-Instead, development will proceed incrementally:
+Lending MVP → Testnet → Security Testing → Liquidity → Mainnet Preparation → Programmable Credit → Financial Infrastructure
 
-Lending MVP → Testnet → Security Testing → Liquidity → Mainnet Preparation → Programmable Credit → Expanded Financial Infrastructure.
+Each major stage should be validated before expanding the protocol with additional functionality.
 
-Each stage is intended to be validated before moving to the next stage.
+---
 
-Development Philosophy
+## Development Philosophy
 
 ICFT follows a modular development approach.
 
-Core lending functionality should remain separated from risk management, oracle infrastructure, liquidity, liquidation, programmable loan logic, and future exchange infrastructure.
+Core lending functionality should remain separated from:
 
-This allows individual components to be upgraded, tested, and audited without requiring the entire protocol to be redesigned.
+- Risk management
+- Oracle infrastructure
+- Liquidity
+- Liquidation
+- Programmable loan logic
+- Exchange infrastructure
+
+This makes the protocol easier to test, audit, maintain, and expand.
 
 Security and risk management take priority over rapid feature expansion.
 
-Contributing
+---
+
+## Contributing
 
 ICFT is an open development project.
 
 Developers, researchers, security specialists, economists, and Web3 contributors are welcome to participate.
 
-Potential contributions include Solidity development, smart-contract architecture, frontend development, testing, security research, economic modeling, risk modeling, oracle integrations, documentation, and developer tooling.
+Potential contributions include:
+
+- Solidity development
+- Smart-contract architecture
+- Frontend development
+- Testing
+- Security research
+- Economic modeling
+- Risk modeling
+- Oracle integrations
+- Documentation
+- Developer tooling
 
 Contributors can open issues, submit pull requests, or participate in technical discussions.
 
-Security Research
+---
+
+## Security Research
 
 Security researchers are encouraged to review the protocol architecture and identify potential vulnerabilities.
 
-Areas of particular importance include smart-contract vulnerabilities, oracle manipulation, reentrancy, access-control failures, liquidation exploits, price manipulation, economic attacks, liquidity attacks, flash-loan attacks, accounting errors, and collateral valuation errors.
+Areas of particular importance include:
+
+- Smart-contract vulnerabilities
+- Oracle manipulation
+- Reentrancy
+- Access-control failures
+- Liquidation exploits
+- Price manipulation
+- Economic attacks
+- Liquidity attacks
+- Flash-loan attacks
+- Accounting errors
+- Collateral valuation errors
 
 A formal bug bounty program may be introduced as the protocol approaches production deployment.
 
+---
 
-Vision
+## Disclaimer
+
+ICFT is an experimental decentralized finance project under development.
+
+The protocol, smart contracts, tokenomics, risk parameters, economic model, supported assets, and planned functionality may change during development and testing.
+
+ICFT does not guarantee profits, token appreciation, liquidity, or protection against market losses.
+
+DeFi protocols involve significant technical, economic, market, smart-contract, oracle, and liquidation risks.
+
+Nothing contained in this repository constitutes financial, investment, legal, or tax advice.
+
+Users should not interact with experimental deployments using funds they cannot afford to lose.
+
+---
+
+## Vision
 
 The long-term vision of ICFT is to create an open and programmable financial infrastructure for crypto assets.
 
-The first step is simple:
+The first step is:
 
-Crypto Collateral → ICFT Credit → Liquidity
+**Crypto Collateral → ICFT Credit → Liquidity**
 
-The long-term objective is much broader:
+The long-term objective is:
 
-Collateral → Credit → Liquidity → Trading → Risk Management → Programmable Loans → Developer Ecosystem
+**Collateral → Credit → Liquidity → Trading → Risk Management → Programmable Loans → Developer Ecosystem**
 
-ICFT aims to move from a simple crypto lending protocol toward a programmable financial layer where users can use their crypto assets as collateral, access flexible liquidity, automate financial decisions, and interact with an expanding ecosystem of decentralized applications.
+ICFT aims to move from a crypto lending protocol toward a programmable financial layer where users can use their crypto assets as collateral, access flexible liquidity, automate financial decisions, and interact with an expanding ecosystem of decentralized applications.
 
 The first objective is to make the lending mechanism work.
 
@@ -654,4 +1015,4 @@ The next objective is to make it safe.
 
 The long-term objective is to make it composable.
 
-ICFT — Programmable Credit Infrastructure for Crypto
+**ICFT — Programmable Credit Infrastructure for Crypto.**
