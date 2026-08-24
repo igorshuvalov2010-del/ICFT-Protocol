@@ -1,0 +1,4 @@
+forge-std/=lib/forge-std/src/
+@chainlink/=node_modules/@chainlink/
+@openzeppelin/=node_modules/@openzeppelin/
+frost-secp256k1-evm/=lib/frost-secp256k1-evm/src/
