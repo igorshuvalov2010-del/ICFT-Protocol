@@ -1,0 +1,6 @@
+[submodule "lib/forge-std"]
+	path = lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "lib/frost-secp256k1-evm"]
+	path = lib/frost-secp256k1-evm
+	url = https://github.com/StackOverflowExcept1on/frost-secp256k1-evm
