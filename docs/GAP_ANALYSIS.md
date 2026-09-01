@@ -2,7 +2,7 @@
 
 ## Status
 
-Date of review: August 23, 2026
+Date of original review: August 23, 2026
 
 Scope reviewed against:
 
@@ -10,10 +10,29 @@ Scope reviewed against:
 - current Solidity code in `src/`
 - current tests in `test/`
 
-Bottom line:
+Bottom line at the time of the original review:
 
 - the repo currently contains a useful prototype skeleton;
 - it does not yet satisfy the canonical definition of a complete ICFT MVP.
+
+## Update Note
+
+This document reflects the repo state at the time of the original MVP gap review.
+
+Since then, the repository has materially improved:
+
+- `LiquidationEngine` is no longer a placeholder;
+- upgradeable deployment and upgrade scripts now exist;
+- fuzz and invariant tests now exist;
+- multi-collateral support for `ETH`, `wBTC`, and `wstETH` now exists;
+- the historical utilization-based accrual mispricing issue has been addressed with a borrow-index accounting model;
+- the protocol has been exercised on Sepolia as an early upgradeable testnet baseline.
+
+Remaining gaps should therefore be read together with:
+
+- `docs/TESTNET_BASELINE.md`
+- `docs/DEPLOYMENT.md`
+- `docs/UPGRADES.md`
 
 ## What Already Exists
 
@@ -238,6 +257,25 @@ Decision:
 - treat them as future roadmap items, not current MVP acceptance criteria.
 
 ## Required Next Implementation Phase
+
+The next phase should no longer be treated as "add a few missing features."
+
+It should be treated as a **testnet-baseline refactor** with three goals:
+
+1. move stateful contracts to upgradeable deployments;
+2. replace the current simplistic debt accrual with a more correct index-based model;
+3. add deployment, admin, and testing discipline suitable for repeated public testnet releases.
+
+### Newly Confirmed Economic Flaw
+
+The current lending pool accrual logic applies the latest utilization-based APR when interest is accrued after time has already elapsed.
+
+This can overcharge or undercharge for earlier sub-periods because the protocol does not maintain a proper borrow index history.
+
+Implication:
+
+- the localhost prototype is still useful;
+- the protocol should not be promoted to public testnet without fixing this accounting path.
 
 To move this repo from prototype to complete MVP, the next phase must deliver:
 

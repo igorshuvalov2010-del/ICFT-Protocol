@@ -78,7 +78,9 @@ contract ICFTProtocolFuzzTest is ProtocolFixture {
             return;
         }
 
-        uint256 resultingLtv = riskEngine.calculateLTV(position.collateralETH - withdrawAmount, debtBefore);
+        uint256 currentCollateralValueUsd = lendingPool.getCollateralValueUSD(alice);
+        uint256 withdrawnValueUsd = riskEngine.getCollateralValueUSD(NATIVE_ASSET, withdrawAmount);
+        uint256 resultingLtv = riskEngine.calculateLTV(currentCollateralValueUsd - withdrawnValueUsd, debtBefore);
 
         if (resultingLtv > riskEngine.getMaxLTVBps()) {
             vm.expectRevert(BorrowExceedsLTV.selector);

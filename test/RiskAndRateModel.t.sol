@@ -44,14 +44,13 @@ contract RiskAndRateModelTest is ProtocolFixture {
 
     function testRiskEngineReturnsEmptyLiquidationForHealthyPosition() public view {
         uint256 healthyDebt = 1_000e18;
-        uint256 collateral = 1 ether;
+        uint256 collateralValueUsd = 2_000e18;
 
-        assertFalse(riskEngine.isLiquidatable(collateral, healthyDebt));
+        assertFalse(riskEngine.isLiquidatable(collateralValueUsd, healthyDebt));
 
-        IRiskEngine.LiquidationOutcome memory outcome = riskEngine.calculateLiquidation(collateral, healthyDebt);
+        IRiskEngine.LiquidationOutcome memory outcome = riskEngine.calculateLiquidation(collateralValueUsd, healthyDebt);
 
         assertEq(outcome.debtToCoverUSD, 0);
-        assertEq(outcome.collateralToSeizeETH, 0);
         assertEq(outcome.collateralValueSeizedUSD, 0);
         assertEq(outcome.resultingLtvBps, 0);
     }
@@ -68,5 +67,33 @@ contract RiskAndRateModelTest is ProtocolFixture {
         assertEq(riskEngine.getLiquidationThresholdBps(), 8_800);
         assertEq(riskEngine.getTargetLTVBps(), 8_200);
         assertEq(riskEngine.getLiquidationBonusBps(), 300);
+    }
+
+    function testRiskEngineRejectsUnauthorizedParameterUpdate() public {
+        vm.prank(alice);
+        vm.expectRevert();
+        riskEngine.setRiskParameters(7_500, 8_800, 8_200, 300);
+    }
+
+    function testRiskEngineCapsLiquidationToFullDebtAndCollateral() public {
+        IRiskEngine.LiquidationOutcome memory outcome = riskEngine.calculateLiquidation(2_000e18, 100_000e18);
+
+        assertEq(outcome.debtToCoverUSD, 100_000e18);
+        assertEq(outcome.collateralValueSeizedUSD, 2_000e18);
+        assertEq(outcome.resultingLtvBps, 0);
+    }
+
+    function testRiskEngineReturnsCurrentLtvWhenThresholdEqualsTarget() public {
+        riskEngine.setRiskParameters(7_500, 8_500, 8_500, 300);
+
+        uint256 collateralValueUsd = 2_000e18;
+        uint256 debt = 1_700e18;
+        uint256 currentLtv = riskEngine.calculateLTV(collateralValueUsd, debt);
+        IRiskEngine.LiquidationOutcome memory outcome = riskEngine.calculateLiquidation(collateralValueUsd, debt);
+
+        assertEq(currentLtv, 8_500);
+        assertEq(outcome.debtToCoverUSD, 0);
+        assertEq(outcome.collateralValueSeizedUSD, 0);
+        assertEq(outcome.resultingLtvBps, currentLtv);
     }
 }

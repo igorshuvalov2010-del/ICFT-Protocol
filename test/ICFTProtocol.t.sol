@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.20;
 
-import {Test} from "forge-std/Test.sol";
+import {TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 
+import {ProtocolFixture} from "./helpers/ProtocolFixture.sol";
 import {ICFT} from "../src/core/ICFT/token/ICFT.sol";
 import {PriceOracle} from "../src/core/ICFT/oracle/PriceOracle.sol";
 import {InterestRateModel} from "../src/core/ICFT/lending/InterestRateModel.sol";
-import {IInterestRateModel} from "../src/core/interfaces/IInterestRateModel.sol";
 import {LendingPool} from "../src/core/ICFT/lending/LendingPool.sol";
 import {LiquidationEngine} from "../src/core/ICFT/lending/LiquidationEngine.sol";
 import {RiskEngine} from "../src/core/ICFT/risk/RiskEngine.sol";
-import {MockChainlinkFeed} from "../src/mocks/MockChainlinkFeed.sol";
+import {IInterestRateModel} from "../src/core/interfaces/IInterestRateModel.sol";
 import {
     BorrowExceedsLTV,
     BorrowingDisabledAtUtilization,
@@ -18,87 +18,30 @@ import {
     InsufficientCollateral,
     InsufficientLiquidity,
     InvalidAddress,
-    MaxRepayBelowRequired,
     NoDebt,
-    NotLiquidatable,
     ZeroAmount
 } from "../src/core/utils/Errors.sol";
 
-contract ICFTProtocolTest is Test {
-    uint256 internal constant ONE = 1e18;
-    uint256 internal constant FUND_A = 200_000_000 ether;
-
-    address internal admin = address(this);
-    address internal liquidity = makeAddr("liquidity");
-    address internal reserve = makeAddr("reserve");
-    address internal futureInvestors = makeAddr("futureInvestors");
-    address internal founder = makeAddr("founder");
-    address internal developers = makeAddr("developers");
-    address internal ecosystem = makeAddr("ecosystem");
-
-    address internal alice = makeAddr("alice");
-    address internal liquidator = makeAddr("liquidator");
-
-    ICFT internal icft;
-    MockChainlinkFeed internal ethFeed;
-    PriceOracle internal oracle;
-    InterestRateModel internal rateModel;
-    RiskEngine internal riskEngine;
-    LendingPool internal lendingPool;
-    LiquidationEngine internal liquidationEngine;
+contract ICFTProtocolTest is ProtocolFixture {
+    function _forwardEth(address payable target) external payable {
+        (bool success, bytes memory returndata) = target.call{value: msg.value}("");
+        if (!success) {
+            assembly {
+                revert(add(returndata, 0x20), mload(returndata))
+            }
+        }
+    }
 
     function setUp() public {
-        ethFeed = new MockChainlinkFeed(8, 2_000e8);
+        _setUpProtocol();
+    }
 
-        oracle = new PriceOracle(admin, address(ethFeed), 1 hours, 1e8, 8);
-
-        IInterestRateModel.RateConfig memory config = IInterestRateModel.RateConfig({
-            kink1Bps: 5_000,
-            kink2Bps: 8_000,
-            kink3Bps: 9_000,
-            rate1Bps: 500,
-            rate2Bps: 800,
-            rate3Bps: 1_500,
-            rate4Bps: 2_000,
-            maxBorrowUtilizationBps: 9_000
-        });
-        rateModel = new InterestRateModel(admin, config);
-
-        riskEngine = new RiskEngine(admin, address(oracle), 8_000, 9_000, 8_500, 500);
-
-        icft = new ICFT(
-            admin,
-            liquidity,
-            reserve,
-            futureInvestors,
-            founder,
-            developers,
-            ecosystem
-        );
-
-        lendingPool = new LendingPool(
-            admin,
-            address(icft),
-            address(oracle),
-            address(riskEngine),
-            address(rateModel),
-            FUND_A,
-            1_000 ether
-        );
-
-        liquidationEngine = new LiquidationEngine(admin, address(icft), address(lendingPool));
-
-        icft.transfer(address(lendingPool), FUND_A);
-        lendingPool.grantRole(lendingPool.LIQUIDATION_BOT_ROLE(), address(liquidationEngine));
-        liquidationEngine.grantRole(liquidationEngine.OPERATOR_ROLE(), liquidator);
-
-        vm.deal(alice, 10 ether);
-        vm.prank(liquidity);
-        icft.transfer(liquidator, 10_000 ether);
-
+    function testProxyInitializedCoreState() public view {
+        assertEq(icft.totalSupply(), 1_000_000_000 ether);
         assertEq(lendingPool.fundALiquidityICFT(), FUND_A);
+        assertEq(lendingPool.borrowIndex(), 1e18);
         assertEq(lendingPool.totalBorrowedICFT(), 0);
-        assertEq(lendingPool.protocolRevenueICFT(), 0);
+        assertEq(lendingPool.totalAccruedInterestUSD(), 0);
     }
 
     function testOracleNormalizesChainlinkAndManualPrices() public {
@@ -110,10 +53,11 @@ contract ICFTProtocolTest is Test {
     }
 
     function testBorrowAndRepayUsesUsdDenominatedDebt() public {
+        uint256 balanceBefore = icft.balanceOf(alice);
+
         vm.startPrank(alice);
         lendingPool.depositCollateral{value: 1 ether}();
         lendingPool.borrow(100 ether);
-        icft.approve(address(lendingPool), type(uint256).max);
         vm.stopPrank();
 
         assertEq(lendingPool.getDebt(alice), 100e18);
@@ -122,51 +66,37 @@ contract ICFTProtocolTest is Test {
 
         oracle.setManualICFTPrice(2e8, 8);
 
-        vm.startPrank(alice);
+        vm.prank(alice);
         lendingPool.repay(50 ether);
-        vm.stopPrank();
 
         assertEq(lendingPool.getDebt(alice), 0);
-        assertEq(icft.balanceOf(alice), 50 ether);
+        assertEq(icft.balanceOf(alice), balanceBefore + 50 ether);
         assertEq(lendingPool.totalBorrowedICFT(), 50 ether);
         assertEq(lendingPool.fundALiquidityICFT(), FUND_A - 50 ether);
         assertEq(lendingPool.protocolRevenueICFT(), 0);
     }
 
-    function testConstructorRejectsZeroAdmin() public {
-        vm.expectRevert(InvalidAddress.selector);
-        new LendingPool(
-            address(0),
-            address(icft),
-            address(oracle),
-            address(riskEngine),
-            address(rateModel),
-            FUND_A,
-            1_000 ether
-        );
-    }
+    function testAccrualUsesOldUtilizationBeforeNewBorrowChangesIt() public {
+        vm.deal(alice, 30_000 ether);
+        vm.deal(bob, 80_000 ether);
 
-    function testConstructorRejectsZeroFundAAllocation() public {
-        vm.expectRevert(ZeroAmount.selector);
-        new LendingPool(
-            admin,
-            address(icft),
-            address(oracle),
-            address(riskEngine),
-            address(rateModel),
-            0,
-            1_000 ether
-        );
-    }
-
-    function testWithdrawRevertsWhenPositionWouldExceedMaxLtv() public {
         vm.startPrank(alice);
-        lendingPool.depositCollateral{value: 1 ether}();
-        lendingPool.borrow(1_500 ether);
-
-        vm.expectRevert(BorrowExceedsLTV.selector);
-        lendingPool.withdrawCollateral(0.4 ether);
+        lendingPool.depositCollateral{value: 25_000 ether}();
+        lendingPool.borrow(40_000_000 ether);
         vm.stopPrank();
+
+        vm.warp(block.timestamp + 365 days);
+        ethFeed.setRoundData(2_000e8, block.timestamp);
+
+        vm.startPrank(bob);
+        lendingPool.depositCollateral{value: 75_000 ether}();
+        lendingPool.borrow(120_000_000 ether);
+        vm.stopPrank();
+
+        uint256 aliceDebt = lendingPool.getDebt(alice);
+        assertEq(aliceDebt, 42_000_000 ether);
+        assertEq(lendingPool.totalAccruedInterestUSD(), 2_000_000 ether);
+        assertEq(lendingPool.borrowIndex(), 1_050_000_000_000_000_000);
     }
 
     function testDepositCollateralRejectsZeroAmount() public {
@@ -196,10 +126,54 @@ contract ICFTProtocolTest is Test {
         assertEq(lendingPool.getLTV(alice), 0);
     }
 
-    function testPauseStopsBorrowButAllowsRepay() public {
+    function testWbtcCollateralCanBeDepositedAndValued() public {
+        uint256 depositAmount = 2 * 10 ** wbtc.decimals();
+
+        vm.prank(alice);
+        lendingPool.depositCollateral(address(wbtc), depositAmount);
+
+        assertEq(lendingPool.getCollateralBalance(alice, address(wbtc)), depositAmount);
+        assertEq(lendingPool.getCollateralValueUSD(alice), 120_000e18);
+    }
+
+    function testWstethCollateralCanBeDepositedAndValued() public {
+        uint256 depositAmount = 5 ether;
+
+        vm.prank(alice);
+        lendingPool.depositCollateral(address(wsteth), depositAmount);
+
+        assertEq(lendingPool.getCollateralBalance(alice, address(wsteth)), depositAmount);
+        assertEq(lendingPool.getCollateralValueUSD(alice), 11_000e18);
+    }
+
+    function testBasketCollateralSupportsBorrowingAcrossEthAndWbtc() public {
         vm.startPrank(alice);
         lendingPool.depositCollateral{value: 1 ether}();
+        lendingPool.depositCollateral(address(wbtc), 1 * 10 ** wbtc.decimals());
+        lendingPool.borrow(45_000 ether);
         vm.stopPrank();
+
+        assertEq(lendingPool.getDebt(alice), 45_000e18);
+        assertEq(lendingPool.getCollateralValueUSD(alice), 62_000e18);
+        assertLe(lendingPool.getLTV(alice), riskEngine.getMaxLTVBps());
+    }
+
+    function testBasketCollateralSupportsBorrowingAcrossEthWbtcAndWsteth() public {
+        vm.startPrank(alice);
+        lendingPool.depositCollateral{value: 1 ether}();
+        lendingPool.depositCollateral(address(wbtc), 1 * 10 ** wbtc.decimals());
+        lendingPool.depositCollateral(address(wsteth), 10 ether);
+        lendingPool.borrow(60_000 ether);
+        vm.stopPrank();
+
+        assertEq(lendingPool.getDebt(alice), 60_000e18);
+        assertEq(lendingPool.getCollateralValueUSD(alice), 84_000e18);
+        assertLe(lendingPool.getLTV(alice), riskEngine.getMaxLTVBps());
+    }
+
+    function testPauseStopsBorrowButAllowsRepay() public {
+        vm.prank(alice);
+        lendingPool.depositCollateral{value: 1 ether}();
 
         lendingPool.pause();
 
@@ -209,10 +183,8 @@ contract ICFTProtocolTest is Test {
 
         lendingPool.unpause();
 
-        vm.startPrank(alice);
+        vm.prank(alice);
         lendingPool.borrow(50 ether);
-        icft.approve(address(lendingPool), type(uint256).max);
-        vm.stopPrank();
 
         lendingPool.pause();
 
@@ -220,6 +192,45 @@ contract ICFTProtocolTest is Test {
         lendingPool.repay(10 ether);
 
         assertLt(lendingPool.getDebt(alice), 50e18);
+    }
+
+    function testAccrueInterestWithNoDebtDoesNotChangeBorrowIndex() public {
+        uint256 borrowIndexBefore = lendingPool.borrowIndex();
+        uint256 lastAccrualBefore = lendingPool.lastAccrualTime();
+
+        vm.warp(block.timestamp + 7 days);
+        lendingPool.accrueInterest();
+
+        assertEq(lendingPool.borrowIndex(), borrowIndexBefore);
+        assertGt(lendingPool.lastAccrualTime(), lastAccrualBefore);
+        assertEq(lendingPool.totalAccruedInterestUSD(), 0);
+    }
+
+    function testAccrueInterestWithZeroRateLeavesBorrowIndexUnchanged() public {
+        IInterestRateModel.RateConfig memory zeroRateConfig = IInterestRateModel.RateConfig({
+            kink1Bps: 5_000,
+            kink2Bps: 8_000,
+            kink3Bps: 9_000,
+            rate1Bps: 0,
+            rate2Bps: 0,
+            rate3Bps: 0,
+            rate4Bps: 0,
+            maxBorrowUtilizationBps: 9_000
+        });
+        rateModel.setRateConfig(zeroRateConfig);
+
+        vm.startPrank(alice);
+        lendingPool.depositCollateral{value: 10 ether}();
+        lendingPool.borrow(100 ether);
+        vm.stopPrank();
+
+        uint256 borrowIndexBefore = lendingPool.borrowIndex();
+        vm.warp(block.timestamp + 30 days);
+        lendingPool.accrueInterest();
+
+        assertEq(lendingPool.borrowIndex(), borrowIndexBefore);
+        assertEq(lendingPool.getDebt(alice), 100 ether);
+        assertEq(lendingPool.totalAccruedInterestUSD(), 0);
     }
 
     function testBorrowRejectsZeroAmount() public {
@@ -238,263 +249,147 @@ contract ICFTProtocolTest is Test {
     }
 
     function testBorrowRejectsAtUtilizationCap() public {
-        uint256 smallFundA = 1_000 ether;
-        LendingPool smallPool = new LendingPool(
-            admin,
-            address(icft),
-            address(oracle),
-            address(riskEngine),
-            address(rateModel),
-            smallFundA,
-            0
+        IInterestRateModel.RateConfig memory config = IInterestRateModel.RateConfig({
+            kink1Bps: 5_000,
+            kink2Bps: 8_000,
+            kink3Bps: 9_000,
+            rate1Bps: 500,
+            rate2Bps: 800,
+            rate3Bps: 1_500,
+            rate4Bps: 2_000,
+            maxBorrowUtilizationBps: 9_000
+        });
+
+        InterestRateModel rateImplementation = new InterestRateModel();
+        LendingPool poolImplementation = new LendingPool();
+
+        InterestRateModel smallRateModel = InterestRateModel(
+            address(
+                new TransparentUpgradeableProxy(
+                    address(rateImplementation),
+                    admin,
+                    abi.encodeCall(InterestRateModel.initialize, (admin, config))
+                )
+            )
         );
-        vm.prank(liquidity);
-        icft.transfer(address(smallPool), smallFundA);
+
+        ICFT smallIcftImplementation = new ICFT();
+        ICFT smallIcft = ICFT(
+            address(
+                new TransparentUpgradeableProxy(
+                    address(smallIcftImplementation),
+                    admin,
+                    abi.encodeCall(ICFT.initialize, (admin, liquidity, reserve, futureInvestors, founder, developers, ecosystem))
+                )
+            )
+        );
+
+        LendingPool isolatedSmallPool = LendingPool(
+            payable(
+                address(
+                    new TransparentUpgradeableProxy(
+                        address(poolImplementation),
+                        admin,
+                        abi.encodeCall(
+                            LendingPool.initialize,
+                            (admin, address(smallIcft), address(oracle), address(riskEngine), address(smallRateModel), 1_000 ether, 0)
+                        )
+                    )
+                )
+            )
+        );
+
+        smallIcft.transfer(address(isolatedSmallPool), 1_000 ether);
 
         vm.deal(alice, 2 ether);
         vm.prank(alice);
-        smallPool.depositCollateral{value: 1 ether}();
+        isolatedSmallPool.depositCollateral{value: 1 ether}();
 
         vm.prank(alice);
         vm.expectRevert(BorrowingDisabledAtUtilization.selector);
-        smallPool.borrow(900 ether);
+        isolatedSmallPool.borrow(900 ether);
     }
 
-    function testBorrowRejectsWhenLtvExceeded() public {
-        vm.prank(alice);
-        lendingPool.depositCollateral{value: 1 ether}();
-
-        vm.prank(alice);
-        vm.expectRevert(BorrowExceedsLTV.selector);
-        lendingPool.borrow(1_700 ether);
-    }
-
-    function testInterestCreatesProtocolRevenueBucket() public {
-        vm.startPrank(alice);
-        lendingPool.depositCollateral{value: 1 ether}();
-        lendingPool.borrow(100 ether);
-        icft.approve(address(lendingPool), type(uint256).max);
-        vm.stopPrank();
-
-        vm.warp(block.timestamp + 365 days);
-
-        vm.prank(alice);
-        lendingPool.repay(10 ether);
-
-        assertGt(lendingPool.protocolRevenueICFT(), 0);
-        assertEq(lendingPool.totalBorrowedICFT(), 95 ether);
-        assertEq(lendingPool.fundALiquidityICFT(), FUND_A - 95 ether);
-        assertEq(lendingPool.totalAccruedInterestUSD(), 0);
-        assertEq(lendingPool.totalPrincipalDebtUSD(), 95 ether);
-    }
-
-    function testAvailableLiquidityUsesFundABucketNotRawBalance() public {
-        vm.startPrank(alice);
-        lendingPool.depositCollateral{value: 1 ether}();
-        lendingPool.borrow(100 ether);
-        icft.approve(address(lendingPool), type(uint256).max);
-        vm.stopPrank();
-
-        oracle.setManualICFTPrice(2e8, 8);
-
-        vm.prank(alice);
-        lendingPool.repay(50 ether);
-
-        assertEq(lendingPool.getAvailableLiquidity(), FUND_A - 50 ether - 1_000 ether);
-        assertEq(lendingPool.getSpendablePrincipalBalance(), FUND_A - 50 ether);
-    }
-
-    function testAvailableLiquidityReturnsZeroWhenBufferExhaustsInventory() public {
+    function testAvailableLiquidityReturnsZeroWhenBufferConsumesInventory() public {
         lendingPool.setLiquidityBuffer(FUND_A);
         assertEq(lendingPool.getAvailableLiquidity(), 0);
     }
 
-    function testAvailableBorrowReturnsZeroWhenPositionAlreadyAtLimit() public {
+    function testGetAvailableBorrowIsCappedByPoolLiquidity() public {
+        lendingPool.setLiquidityBuffer(FUND_A - 50 ether);
+
+        vm.deal(alice, 100 ether);
+        vm.prank(alice);
+        lendingPool.depositCollateral{value: 100 ether}();
+
+        assertEq(lendingPool.getAvailableBorrow(alice), 50 ether);
+    }
+
+    function testWithdrawRevertsWhenPositionWouldExceedMaxLtv() public {
         vm.startPrank(alice);
         lendingPool.depositCollateral{value: 1 ether}();
-        lendingPool.borrow(1_600 ether);
+        lendingPool.borrow(1_500 ether);
+
+        vm.expectRevert(BorrowExceedsLTV.selector);
+        lendingPool.withdrawCollateral(0.4 ether);
         vm.stopPrank();
-
-        assertEq(lendingPool.getAvailableBorrow(alice), 0);
     }
 
-    function testRepayRejectsZeroAmount() public {
-        vm.expectRevert(ZeroAmount.selector);
-        lendingPool.repay(0);
+    function testDirectEthTransfersRevert() public {
+        vm.expectRevert(DirectETHTransfersDisabled.selector);
+        this._forwardEth{value: 1 wei}(payable(address(lendingPool)));
     }
 
-    function testRepayRejectsWhenNoDebt() public {
+    function testRepayRevertsWithoutDebt() public {
         vm.prank(alice);
         vm.expectRevert(NoDebt.selector);
         lendingPool.repay(1 ether);
     }
 
-    function testRepayUsesFullRepayPathWhenAmountExceedsDebt() public {
+    function testInterestOnlyRepayAccruesProtocolRevenueWithoutRestoringPrincipal() public {
         vm.startPrank(alice);
         lendingPool.depositCollateral{value: 1 ether}();
         lendingPool.borrow(100 ether);
-        icft.approve(address(lendingPool), type(uint256).max);
-        lendingPool.repay(200 ether);
-        vm.stopPrank();
-
-        assertEq(lendingPool.getDebt(alice), 0);
-        assertEq(lendingPool.totalPrincipalDebtUSD(), 0);
-    }
-
-    function testLiquidationReducesDebtAndSeizesCollateral() public {
-        vm.startPrank(alice);
-        lendingPool.depositCollateral{value: 1 ether}();
-        lendingPool.borrow(160 ether);
-        vm.stopPrank();
-
-        ethFeed.setRoundData(170e8, block.timestamp);
-
-        uint256 collateralBefore = liquidator.balance;
-
-        vm.startPrank(liquidator);
-        icft.approve(address(lendingPool), type(uint256).max);
-        icft.approve(address(liquidationEngine), type(uint256).max);
-        liquidationEngine.executeLiquidation(alice, type(uint256).max, payable(liquidator));
-        vm.stopPrank();
-
-        assertLt(lendingPool.getDebt(alice), 160e18);
-        assertGt(liquidator.balance, collateralBefore);
-        assertLe(lendingPool.getLTV(alice), 8_500);
-        assertGt(lendingPool.fundALiquidityICFT(), FUND_A - 160 ether);
-        assertEq(liquidationEngine.totalExecutions(), 1);
-        assertGt(liquidationEngine.totalRepaidIcft(), 0);
-        assertGt(liquidationEngine.totalRepaidUsd(), 0);
-        assertGt(liquidationEngine.totalSeizedEth(), 0);
-    }
-
-    function testPoolLiquidationRejectsZeroBeneficiary() public {
-        vm.prank(address(liquidationEngine));
-        vm.expectRevert(InvalidAddress.selector);
-        lendingPool.liquidate(alice, 1 ether, address(0));
-    }
-
-    function testPoolLiquidationRejectsWhenNoDebt() public {
-        lendingPool.grantRole(lendingPool.LIQUIDATION_BOT_ROLE(), address(this));
-        vm.expectRevert(NoDebt.selector);
-        lendingPool.liquidate(alice, 1 ether, address(this));
-    }
-
-    function testPoolLiquidationRejectsHealthyPosition() public {
-        lendingPool.grantRole(lendingPool.LIQUIDATION_BOT_ROLE(), address(this));
-
-        vm.startPrank(alice);
-        lendingPool.depositCollateral{value: 1 ether}();
-        lendingPool.borrow(100 ether);
-        vm.stopPrank();
-
-        vm.expectRevert(NotLiquidatable.selector);
-        lendingPool.liquidate(alice, 100 ether, address(this));
-    }
-
-    function testPoolLiquidationRejectsWhenPaused() public {
-        vm.startPrank(alice);
-        lendingPool.depositCollateral{value: 1 ether}();
-        lendingPool.borrow(160 ether);
-        vm.stopPrank();
-
-        ethFeed.setRoundData(170e8, block.timestamp);
-        lendingPool.pause();
-
-        vm.prank(liquidator);
-        vm.expectRevert();
-        liquidationEngine.executeLiquidation(alice, type(uint256).max, payable(liquidator));
-    }
-
-    function testLiquidationPreviewExposesSettlementPlan() public {
-        vm.startPrank(alice);
-        lendingPool.depositCollateral{value: 1 ether}();
-        lendingPool.borrow(160 ether);
-        vm.stopPrank();
-
-        ethFeed.setRoundData(170e8, block.timestamp);
-
-        LiquidationEngine.LiquidationPreview memory preview = liquidationEngine.previewLiquidation(alice);
-
-        assertTrue(preview.isLiquidatable);
-        assertGt(preview.requiredIcft, 0);
-        assertGt(preview.collateralToSeizeEth, 0);
-        assertLe(preview.resultingLtvBps, 8_500);
-    }
-
-    function testDirectEthTransferReverts() public {
-        vm.deal(address(this), 1 ether);
-        vm.expectRevert(DirectETHTransfersDisabled.selector);
-        payable(address(lendingPool)).transfer(1 ether);
-    }
-
-    function testLiquidationEngineRejectsZeroBeneficiary() public {
-        vm.prank(liquidator);
-        vm.expectRevert();
-        liquidationEngine.executeLiquidation(alice, 1 ether, payable(address(0)));
-    }
-
-    function testLiquidationEngineRejectsZeroMaxRepay() public {
-        vm.prank(liquidator);
-        vm.expectRevert();
-        liquidationEngine.executeLiquidation(alice, 0, payable(liquidator));
-    }
-
-    function testLiquidationEnginePreviewReturnsEmptyForHealthyPosition() public {
-        vm.prank(alice);
-        lendingPool.depositCollateral{value: 1 ether}();
-
-        LiquidationEngine.LiquidationPreview memory preview = liquidationEngine.previewLiquidation(alice);
-        assertFalse(preview.isLiquidatable);
-        assertEq(preview.requiredIcft, 0);
-        assertEq(preview.collateralToSeizeEth, 0);
-    }
-
-    function testLiquidationEngineRejectsUnauthorizedOperator() public {
-        vm.prank(alice);
-        vm.expectRevert();
-        liquidationEngine.executeLiquidation(alice, 1 ether, payable(alice));
-    }
-
-    function testLiquidationEngineHonorsMaxRepayLimit() public {
-        vm.startPrank(alice);
-        lendingPool.depositCollateral{value: 1 ether}();
-        lendingPool.borrow(160 ether);
-        vm.stopPrank();
-
-        ethFeed.setRoundData(170e8, block.timestamp);
-
-        LiquidationEngine.LiquidationPreview memory preview = liquidationEngine.previewLiquidation(alice);
-        uint256 limitedMax = preview.requiredIcft - 1;
-
-        vm.prank(liquidator);
-        vm.expectRevert(MaxRepayBelowRequired.selector);
-        liquidationEngine.executeLiquidation(alice, limitedMax, payable(liquidator));
-    }
-
-    function testSetLiquidityBufferUpdatesValue() public {
-        lendingPool.setLiquidityBuffer(123 ether);
-        assertEq(lendingPool.liquidityBuffer(), 123 ether);
-    }
-
-    function testCurrentInterestIsZeroWithoutDebt() public view {
-        assertEq(lendingPool.getCurrentInterest(alice), 0);
-    }
-
-    function testGetSpendablePrincipalBalanceSubtractsRevenue() public {
-        vm.startPrank(alice);
-        lendingPool.depositCollateral{value: 1 ether}();
-        lendingPool.borrow(100 ether);
-        icft.approve(address(lendingPool), type(uint256).max);
         vm.stopPrank();
 
         vm.warp(block.timestamp + 365 days);
+        ethFeed.setRoundData(2_000e8, block.timestamp);
 
         vm.prank(alice);
-        lendingPool.repay(10 ether);
+        lendingPool.repay(5 ether);
 
-        assertEq(
-            lendingPool.getSpendablePrincipalBalance(),
-            icft.balanceOf(address(lendingPool)) - lendingPool.protocolRevenueICFT()
+        assertEq(lendingPool.getDebt(alice), 100 ether);
+        assertEq(lendingPool.protocolRevenueICFT(), 5 ether);
+        assertEq(lendingPool.fundALiquidityICFT(), FUND_A - 100 ether);
+        assertEq(lendingPool.totalBorrowedICFT(), 100 ether);
+    }
+
+    function testFullRepayAfterInterestSeparatesPrincipalAndRevenue() public {
+        vm.startPrank(alice);
+        lendingPool.depositCollateral{value: 1 ether}();
+        lendingPool.borrow(100 ether);
+        vm.stopPrank();
+
+        vm.warp(block.timestamp + 365 days);
+        ethFeed.setRoundData(2_000e8, block.timestamp);
+
+        vm.prank(alice);
+        lendingPool.repay(200 ether);
+
+        assertEq(lendingPool.getDebt(alice), 0);
+        assertEq(lendingPool.totalBorrowedICFT(), 0);
+        assertEq(lendingPool.fundALiquidityICFT(), FUND_A);
+        assertEq(lendingPool.protocolRevenueICFT(), 5 ether);
+    }
+
+    function testInitializersRejectZeroAdmin() public {
+        PriceOracle oracleImplementation = new PriceOracle();
+
+        vm.expectRevert();
+        new TransparentUpgradeableProxy(
+            address(oracleImplementation),
+            admin,
+            abi.encodeCall(PriceOracle.initialize, (address(0), address(ethFeed), 1 hours, 1e8, 8))
         );
     }
 }

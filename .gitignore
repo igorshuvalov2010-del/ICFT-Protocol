@@ -1,0 +1,39 @@
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Foundry build artifacts
+cache/
+out/
+
+# Dependencies
+lib/
+node_modules/
+
+# Broadcast artifacts
+broadcast/*/31337/
+broadcast/**/dry-run/
+
+# Logs / reports
+*.log
+lcov.info
+coverage/
+
+# Misc local scratch space
+scripts/
+spec/
+tmp/
+
+# Private business / investor docs
+ICFT_PROTOCOL_DOCS/
+
+# Foundry broadcast artifacts
+broadcast/

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines the canonical MVP scope for the ICFT protocol as of August 23, 2026.
+This document defines the canonical localhost MVP scope for the ICFT protocol as of August 23, 2026.
 
 Its purpose is to remove ambiguity between:
 
@@ -11,7 +11,12 @@ Its purpose is to remove ambiguity between:
 - `ICFT_PROTOCOL_DOCS/Tockenomics_ICFT.html`;
 - `ICFT_PROTOCOL_DOCS/ICFT_White_Paper_v4.html`.
 
-This spec is the source of truth for code, tests, deployment, and future reviews.
+This spec is the source of truth for the original **localhost MVP baseline**.
+
+For the next engineering stage after this MVP, also read:
+
+- `docs/TESTNET_BASELINE.md`
+- `docs/DEPLOYMENT.md`
 
 ## Source Priority
 
@@ -31,7 +36,7 @@ Rationale:
 
 ## Canonical Product Definition
 
-ICFT MVP is a testnet-only DeFi lending protocol where:
+ICFT MVP was originally defined as a localhost-first DeFi lending protocol where:
 
 - users deposit ETH as collateral;
 - users borrow ICFT;
@@ -69,7 +74,7 @@ Total:
 
 ### Lending Core
 
-- ETH collateral only.
+- ETH collateral only in the original baseline definition.
 - Deposit collateral.
 - Withdraw collateral.
 - Borrow ICFT.
@@ -137,14 +142,14 @@ MVP must include:
 ## Explicitly Out of Scope for This MVP
 
 - Bitcoin collateral.
-- Multiple collateral assets.
+- Multiple collateral assets in the original localhost baseline.
 - Cross-chain support.
 - Protocol-owned DEX implementation.
 - DAO/governance mechanics as a live control plane.
 - Complex routing.
 - Programmable loans.
 - Mainnet-ready stabilization system.
-- Mainnet-ready proxy architecture.
+- Finalized public-testnet proxy architecture.
 
 ## Canonical Economic Rules
 
@@ -238,6 +243,20 @@ The ICFT MVP is only considered complete when:
 
 1. every in-scope feature above exists in code;
 2. the implementation matches the canonical economic rules;
-3. the repo contains the required deployment and testing artifacts;
-4. the remaining limitations are explicitly documented as testnet-only;
-5. a review against this document finds no placeholder modules in the execution path.
+3. the repository remains clearly labeled as localhost-first until `docs/TESTNET_BASELINE.md` requirements are implemented.
+4. the repo contains the required deployment and testing artifacts;
+5. the remaining limitations are explicitly documented as testnet-only;
+6. a review against this document finds no placeholder modules in the execution path.
+
+## Historical Note
+
+This document intentionally preserves the original MVP acceptance frame.
+
+The repository has since moved beyond that narrow baseline by adding:
+
+- upgradeable proxy deployment;
+- multi-collateral support for `wBTC` and `wstETH`;
+- stronger debt accounting through a global borrow index;
+- public-testnet deployment and upgrade procedures.
+
+Those additions belong to the next stage and should be evaluated primarily against `docs/TESTNET_BASELINE.md`, not against the older localhost-only scope.

@@ -1,11 +1,100 @@
 // SPDX-License-Identifier: GPL-3.0-only
+/**
+ * NOTICE
+ *
+ * ICFT is an upgradeable lending and programmable credit protocol developed
+ * to let users borrow ICFT against on-chain collateral through transparent,
+ * modular, and upgradeable smart contracts on EVM-compatible blockchains.
+ *
+ * Copyright (C) 2026, ICFT contributors.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+//                                                     .,itTTTTTTTTl:.
+//                                           .;iFYCLJYYUXnF!Ii;iI!FnYJCCQwqwnli.
+//                                       lxvUXFtl,.........................,!frQqCzf
+//                                  .;zzcr:.......................................,uLwml,
+//                               IjznT:...............................................:jXmvt
+//                            ;cXn:.......................................................,vLJl
+//                         ;rUni.............................................................;uJui
+//                       IUUI...................................................................IYUl
+//                     fJv;.......................................................................,nYT
+//                   TLU:...........................................................................:cX!
+//                 !QXi...............................................................................;nzI
+//                CQi...................................................................................;vu
+//             .xwx.......................................................................................TvT
+//             JY,...................................;vCLwbkkkkkbkkkkdmCCj,................................,rr
+//           !wv...............................,iFpdddpmQQQLCCLQQQmqbbbddddddYl:.............................Tni
+//          jw!.............................,jYwwcf!..................lfvqqqqqwqLc:...........................in!
+//         UQ!..........................,,lQLz,.............................XLmmQmQwl,.........................irj
+//       .vw;..........................,xLu;..................................:xCQQQQLc.........................:xT.
+//       nm:.........................,jQ:........................................,LQQQQQv........................,rT
+//      vLl.........................tc!............................................IcLLLLLf.......................;rT
+//     rwl.........................z!................................................lYJJUJr,......................;x!
+//    iLF........................lj...................................................,jYYYYU:......................lr,
+//    Jc:.......................:!......................................................!YUUUYl......................Tj
+//   tQt.......................!,........................................................,JJJJU;.....................ixI
+//   CY.......................I:..........................................................;UCLCL......................jr
+//  jQ:......................,:............................................................tccccu.....................,n!
+// .nX......................................,;;,.......................................................................rT
+// ;Li.................:ppm:..........:Tqbbdddpppqqm!;.......hoooooooooooooooooqI,vaoooooooooooooooooobT...............;u,
+// IC;.................:ddw:........lUbbbbQrFFFfxmqwwwUi.....hoooaaoooooaoaaaak:.YaooaoaaooaaaaaooaaoaI................:v:
+// xv,.................:bbq:.......nbbdU,..........:CQ!......kaam.........................Ihhpl........................,rt
+// Uj..................:bbq:.....:QddL;...IF!utTf............bkkm.........................Ikkql.........................fn
+// JF..................:ddw:....,vppc,..,u,X,v.II,x,.........dbbm.........................Ibbwl.........................Tz
+// Uf..................:ppm:....IqqLI..t,.F,.c,.!,.F.........qddm.........................Iddml.........................fX
+// Uf..................:wwQ:....!wwJ..::.::..z...n..v........wpqqwwwwwwwwwwwmT............ippQl.........................fY
+// Xf.................,:mmC:....ImmU..,;.,;..c,..x..r........mqwqwwqqqqqqqqp!.............iqqQl.........................FU
+// Xf..................:LLJ:...,ILLCT..t,.F,.x..t,.x.........mwwQ::::::::::...............iwwLl.........................jJ
+// xj..................:CJY:.....rCJz:..:F;F,j,;;iF:.........QmmL.........................iQQCl........................,un
+// Iv:.................:UUX:.....,vUUUT...:,Trfl;,...........LQmQ.........................iQQJl........................;JI
+// :c:.................:XXc:.......lzXXU!:........:!XYni.....QmmQ.........................iQmCl........................iQi
+// .jf.................,zcv,........,lzzzzznxxxxnczzzzf......QmmQ.........................immCl........................uc,
+//  tv.................,Fjf,............FnucccvvcunT.........UJJY.........................iJJXI........................wx
+//  ,xf.....................innni,....................................................................................zQ:
+//   tj:....................,jCJUT........................,.................................l........................iQu
+//    xt......................rJCLT.....................................,.................,I,.......................,um
+//    :x:......................jJCCQ,....................................................,Y.........................ipI
+//     lr:......................;XCCJt..................................................tf.........................;qn
+//      FF,.......................XCCLU;...............................................U;.........................,JL
+//       fT........................;XLLLYT.................................,.........un..........................,XU
+//       .Tj.........................;LQQQQF......................................:zX:...........................QY:
+//         fF:.........................ivmmmmYF,...............................:fQr,...........................;JL.
+//          lj,..........................,IQqqqqQQl.........................izQYI.............................,Qv
+//           Irl.............................iUmdddddputti...........:lTFQpLc;...............................tqx
+//            .rF................................ITcbkkkkkkkkkbddbkkkkpnTi..................................cwI
+//              txl........................................:IlI:..........................................iwc,
+//               ,rj.....................................................................................Xm!
+//                 tuF................................................................................,umu
+//                   fuT.............................................................................xmv.
+//                     Tcr,........................................................................fQU
+//                       !znI...................................................................;Xmj,
+//                         :uXr,..............................................................jQCl
+//                            !cXj:.......................................................,FLLj.
+//                              .lYJz; ............................................... ,cLQf,
+//                                  inYLnt;.......................................:tjLCvl
+//                                      ;tJmCUx,..............................TUJmLTi.
+//                                           .tXYQqqLnT!t!Ii;;::;iIl!!tjUmmLYXj,
 pragma solidity ^0.8.20;
 
-import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
-import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
 import {IInterestRateModel} from "../../interfaces/IInterestRateModel.sol";
 import {ILendingPool} from "../../interfaces/ILendingPool.sol";
@@ -15,81 +104,86 @@ import {
     BorrowExceedsLTV,
     BorrowingDisabledAtUtilization,
     DirectETHTransfersDisabled,
-    EthTransferFailed,
     InsufficientCollateral,
     InsufficientLiquidity,
     InvalidAddress,
     NoDebt,
-    NotLiquidatable,
     NothingToRepay,
+    NotLiquidatable,
     SlippageExceeded,
+    UnsupportedCollateralAsset,
     ZeroAmount
 } from "../../utils/Errors.sol";
 
 /**
  * @title LendingPool
- * @notice Accepts ETH collateral and lends ICFT while tracking debt in internal USD units.
+ * @notice Accepts native ETH and oracle-approved ERC20 collateral while lending ICFT and tracking debt in internal USD units.
  * @dev The protocol borrows ICFT, not USDC or USDT. USD values are accounting-only 1e18 fixed-point numbers.
- * @dev Principal and interest are tracked separately so Fund A principal and protocol revenue can be accounted for.
- * @dev Interest accrues lazily on user interactions using the current utilization-derived APR from the rate model.
- * @dev Liquidations are restricted to an authorized bot role for the MVP operating model.
+ * @dev Debt is stored in scaled units and accrued through a global borrow index so elapsed time is not repriced by a later utilization bucket.
+ * @dev Native ETH is represented by the zero address inside generic collateral helpers and registries.
+ * @dev Collateral health checks operate on the aggregate USD value of the full user basket across ETH, wBTC, wstETH, and future assets.
+ * @dev Liquidations are restricted to an authorized bot role for the current operating model.
  *
- * @custom:version 1.0.0
+ * @custom:version 1.2.0
  */
-contract LendingPool is ILendingPool, AccessControl, Pausable, ReentrancyGuard {
+contract LendingPool is Initializable, ILendingPool, AccessControlUpgradeable, PausableUpgradeable, ReentrancyGuardUpgradeable {
+    using Address for address payable;
     using SafeERC20 for IERC20;
 
-    /// @notice Role allowed to pause and unpause the pool.
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
-    /// @notice Role allowed to update mutable pool configuration.
     bytes32 public constant CONFIG_ADMIN_ROLE = keccak256("CONFIG_ADMIN_ROLE");
-    /// @notice Role allowed to execute pool-level liquidation calls.
     bytes32 public constant LIQUIDATION_BOT_ROLE = keccak256("LIQUIDATION_BOT_ROLE");
 
-    /// @notice Basis-point denominator used across utilization and APR math.
     uint256 public constant BPS = 10_000;
-    /// @notice Seconds per year used for simple-interest accrual.
     uint256 public constant YEAR = 365 days;
+    uint256 public constant INDEX_SCALE = 1e18;
+    address internal constant NATIVE_ASSET = address(0);
 
-    /// @notice ICFT token lent out by the pool.
-    IERC20 public immutable icft;
-    /// @notice Price oracle used for ICFT/USD and ETH/USD conversions.
-    IPriceOracle public immutable priceOracle;
-    /// @notice Risk engine used for LTV and liquidation checks.
-    IRiskEngine public immutable riskEngine;
-    /// @notice Interest-rate model used to determine borrow APR from utilization.
-    IInterestRateModel public immutable interestRateModel;
+    struct LiquidationSettlement {
+        uint256 debtToCoverUSD;
+        uint256 collateralToSeizeAmount;
+        uint256 collateralValueSeizedUSD;
+        uint256 resultingLtvBps;
+    }
 
-    /// @notice Total ICFT principal allocation initially assigned to Fund A liquidity.
-    uint256 public immutable fundAAllocation;
+    struct DebtSettlement {
+        uint256 repaidPrincipalUSD;
+        uint256 returnedPrincipalICFT;
+        uint256 returnedRevenueICFT;
+    }
 
-    /// @notice Per-user collateral and debt positions.
+    IERC20 public icft;
+    IPriceOracle public priceOracle;
+    IRiskEngine public riskEngine;
+    IInterestRateModel public interestRateModel;
+
+    uint256 public fundAAllocation;
+
+    // Append-only storage layout:
+    // keep legacy state fields in their original order so already deployed
+    // proxies continue to read existing accounting values from the same slots.
     mapping(address => Position) public positions;
 
-    /// @notice Amount of ICFT principal intentionally kept unavailable for new borrows.
     uint256 public liquidityBuffer;
-    /// @notice Remaining ICFT principal still attributed to Fund A liquidity.
     uint256 public fundALiquidityICFT;
-    /// @notice Aggregate ICFT principal currently borrowed by users.
     uint256 public totalBorrowedICFT;
-    /// @notice Aggregate outstanding principal debt in internal USD units.
     uint256 public totalPrincipalDebtUSD;
-    /// @notice Aggregate accrued but unpaid interest in internal USD units.
-    uint256 public totalAccruedInterestUSD;
-    /// @notice ICFT revenue attributable to interest spread and not counted as spendable principal.
+    uint256 public totalScaledDebtUSD;
     uint256 public protocolRevenueICFT;
+    uint256 public borrowIndex;
+    uint256 public lastAccrualTime;
 
-    /**
-     * @notice Creates the lending pool and wires all protocol dependencies.
-     * @param admin Address that receives admin, pause, config, and liquidation roles.
-     * @param icft_ ICFT token address.
-     * @param priceOracle_ Oracle used for ETH/USD and ICFT/USD conversions.
-     * @param riskEngine_ Risk engine used for health and liquidation checks.
-     * @param interestRateModel_ Rate model used for utilization-based APR.
-     * @param fundAAllocation_ Total ICFT principal assigned to Fund A liquidity.
-     * @param liquidityBuffer_ Initial ICFT principal buffer that cannot be borrowed.
-     */
-    constructor(
+    mapping(address => mapping(address => uint256)) internal erc20CollateralBalances;
+    mapping(address => CollateralAsset) internal collateralAssets;
+    mapping(address => bool) internal collateralAssetKnown;
+    address[] internal supportedCollateralAssets;
+
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(
         address admin,
         address icft_,
         address priceOracle_,
@@ -97,7 +191,7 @@ contract LendingPool is ILendingPool, AccessControl, Pausable, ReentrancyGuard {
         address interestRateModel_,
         uint256 fundAAllocation_,
         uint256 liquidityBuffer_
-    ) {
+    ) external initializer {
         if (
             admin == address(0) ||
             icft_ == address(0) ||
@@ -107,12 +201,15 @@ contract LendingPool is ILendingPool, AccessControl, Pausable, ReentrancyGuard {
         ) revert InvalidAddress();
         if (fundAAllocation_ == 0) revert ZeroAmount();
 
+        __AccessControl_init();
+        __Pausable_init();
+        __ReentrancyGuard_init();
+
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
         _grantRole(PAUSER_ROLE, admin);
         _grantRole(CONFIG_ADMIN_ROLE, admin);
         _grantRole(LIQUIDATION_BOT_ROLE, admin);
 
-        // Persist immutable dependencies and initialize aggregate Fund A accounting state.
         icft = IERC20(icft_);
         priceOracle = IPriceOracle(priceOracle_);
         riskEngine = IRiskEngine(riskEngine_);
@@ -120,70 +217,69 @@ contract LendingPool is ILendingPool, AccessControl, Pausable, ReentrancyGuard {
         fundAAllocation = fundAAllocation_;
         liquidityBuffer = liquidityBuffer_;
         fundALiquidityICFT = fundAAllocation_;
+        borrowIndex = INDEX_SCALE;
+        lastAccrualTime = block.timestamp;
+
+        _setCollateralAsset(NATIVE_ASSET, true, true);
     }
 
-    /// @notice Rejects plain ETH transfers so collateral accounting only happens through depositCollateral.
+    function initializeCollateralRegistry() external reinitializer(2) onlyRole(CONFIG_ADMIN_ROLE) {
+        if (!_isKnownCollateralAsset(NATIVE_ASSET)) {
+            _setCollateralAsset(NATIVE_ASSET, true, true);
+        }
+    }
+
     receive() external payable {
         revert DirectETHTransfersDisabled();
     }
 
-    /// @notice Deposits ETH as collateral for the caller.
     function depositCollateral() external payable nonReentrant whenNotPaused {
         if (msg.value == 0) revert ZeroAmount();
+        if (!collateralAssets[NATIVE_ASSET].enabled) revert UnsupportedCollateralAsset();
 
         Position storage position = positions[msg.sender];
-
-        // Realize any pending interest before mutating user state so accounting stays monotonic.
-        _accrueInterest(position, msg.sender);
+        _syncPosition(position, msg.sender);
 
         position.collateralETH += msg.value;
-        position.lastInterestUpdate = block.timestamp;
+        position.lastAccrualIndex = borrowIndex;
         position.active = true;
 
-        emit DepositCollateral(msg.sender, msg.value, position.collateralETH);
+        emit DepositCollateral(msg.sender, NATIVE_ASSET, msg.value, position.collateralETH);
     }
 
-    /**
-     * @notice Withdraws collateral as long as the resulting position stays within max LTV.
-     * @param amountETH ETH amount to withdraw in wei.
-     */
-    function withdrawCollateral(uint256 amountETH) external nonReentrant whenNotPaused {
-        if (amountETH == 0) revert ZeroAmount();
+    function depositCollateral(address asset, uint256 amount) external nonReentrant whenNotPaused {
+        if (asset == NATIVE_ASSET) revert UnsupportedCollateralAsset();
+        if (amount == 0) revert ZeroAmount();
+
+        CollateralAsset memory collateralAsset = collateralAssets[asset];
+        if (!collateralAsset.enabled || !collateralAssetKnown[asset]) revert UnsupportedCollateralAsset();
 
         Position storage position = positions[msg.sender];
-        _accrueInterest(position, msg.sender);
+        _syncPosition(position, msg.sender);
 
-        if (amountETH > position.collateralETH) revert InsufficientCollateral();
+        IERC20(asset).safeTransferFrom(msg.sender, address(this), amount);
+        erc20CollateralBalances[msg.sender][asset] += amount;
+        position.lastAccrualIndex = borrowIndex;
+        position.active = true;
 
-        uint256 remainingCollateral = position.collateralETH - amountETH;
-        uint256 currentDebtUSD = _getStoredDebt(position);
-
-        // Re-check the position after the hypothetical withdrawal to prevent unhealthy exits.
-        if (currentDebtUSD > 0) {
-            uint256 resultingLtv = riskEngine.calculateLTV(remainingCollateral, currentDebtUSD);
-            if (resultingLtv > riskEngine.getMaxLTVBps()) revert BorrowExceedsLTV();
-        }
-
-        position.collateralETH = remainingCollateral;
-        position.lastInterestUpdate = block.timestamp;
-        position.active = remainingCollateral > 0 || currentDebtUSD > 0;
-
-        _sendEth(payable(msg.sender), amountETH);
-
-        emit WithdrawCollateral(msg.sender, amountETH, remainingCollateral);
+        emit DepositCollateral(msg.sender, asset, amount, erc20CollateralBalances[msg.sender][asset]);
     }
 
-    /**
-     * @notice Borrows ICFT against the caller's ETH collateral.
-     * @param amountICFT ICFT amount to borrow using 18 token decimals.
-     */
+    function withdrawCollateral(uint256 amountETH) external nonReentrant whenNotPaused {
+        _withdrawCollateral(msg.sender, NATIVE_ASSET, amountETH);
+    }
+
+    function withdrawCollateral(address asset, uint256 amount) external nonReentrant whenNotPaused {
+        if (asset == NATIVE_ASSET) revert UnsupportedCollateralAsset();
+        _withdrawCollateral(msg.sender, asset, amount);
+    }
+
     function borrow(uint256 amountICFT) external nonReentrant whenNotPaused {
         if (amountICFT == 0) revert ZeroAmount();
 
         Position storage position = positions[msg.sender];
-        _accrueInterest(position, msg.sender);
+        uint256 currentDebtUSD = _syncPosition(position, msg.sender);
 
-        // Block borrows that would exceed current available principal or the configured utilization cap.
         uint256 availableLiquidity = getAvailableLiquidity();
         if (amountICFT > availableLiquidity) revert InsufficientLiquidity();
 
@@ -193,16 +289,19 @@ contract LendingPool is ILendingPool, AccessControl, Pausable, ReentrancyGuard {
         }
 
         uint256 addedDebtUSD = priceOracle.convertICFTToUSD(amountICFT);
-        uint256 newDebtUSD = _getStoredDebt(position) + addedDebtUSD;
-        uint256 newLtv = riskEngine.calculateLTV(position.collateralETH, newDebtUSD);
+        uint256 newDebtUSD = currentDebtUSD + addedDebtUSD;
+        uint256 collateralValueUSD = _getCollateralValueUSD(msg.sender, position);
+        uint256 newLtv = riskEngine.calculateLTV(collateralValueUSD, newDebtUSD);
         if (newLtv > riskEngine.getMaxLTVBps()) revert BorrowExceedsLTV();
 
-        // Update user debt and aggregate Fund A accounting before transferring the borrowed ICFT.
+        uint256 scaledIncrease = _toScaledDebtRoundUp(addedDebtUSD, borrowIndex);
         position.principalDebtUSD += addedDebtUSD;
-        position.lastInterestUpdate = block.timestamp;
+        position.scaledDebtUSD += scaledIncrease;
+        position.lastAccrualIndex = borrowIndex;
         position.active = true;
 
         totalPrincipalDebtUSD += addedDebtUSD;
+        totalScaledDebtUSD += scaledIncrease;
         fundALiquidityICFT -= amountICFT;
         totalBorrowedICFT += amountICFT;
 
@@ -212,17 +311,11 @@ contract LendingPool is ILendingPool, AccessControl, Pausable, ReentrancyGuard {
         emit Borrow(msg.sender, amountICFT, addedDebtUSD, newDebtUSD);
     }
 
-    /**
-     * @notice Repays part or all of the caller's debt using ICFT.
-     * @param amountICFT Maximum ICFT amount the caller wants to repay.
-     */
     function repay(uint256 amountICFT) external nonReentrant {
         if (amountICFT == 0) revert ZeroAmount();
 
         Position storage position = positions[msg.sender];
-        _accrueInterest(position, msg.sender);
-
-        uint256 totalDebtUSD = _getStoredDebt(position);
+        uint256 totalDebtUSD = _syncPosition(position, msg.sender);
         if (totalDebtUSD == 0) revert NoDebt();
 
         uint256 fullRepayICFT = priceOracle.convertUSDToICFT(totalDebtUSD, true);
@@ -231,159 +324,155 @@ contract LendingPool is ILendingPool, AccessControl, Pausable, ReentrancyGuard {
 
         if (repaidDebtUSD == 0) revert NothingToRepay();
 
-        // Split repayment into interest and principal so Fund A principal and protocol revenue remain separable.
-        (uint256 repaidInterestUSD, uint256 repaidPrincipalUSD) = _previewRepaymentBreakdown(position, repaidDebtUSD);
+        uint256 currentInterestUSD = totalDebtUSD - position.principalDebtUSD;
+        uint256 repaidInterestUSD = repaidDebtUSD < currentInterestUSD ? repaidDebtUSD : currentInterestUSD;
+        uint256 repaidPrincipalUSD = repaidDebtUSD - repaidInterestUSD;
+        if (repaidPrincipalUSD > position.principalDebtUSD) {
+            repaidPrincipalUSD = position.principalDebtUSD;
+        }
+
         (uint256 returnedPrincipalICFT, uint256 returnedRevenueICFT) =
             _splitReturnedICFT(actualICFT, repaidDebtUSD, repaidPrincipalUSD);
 
         icft.safeTransferFrom(msg.sender, address(this), actualICFT);
-        _reduceDebt(position, repaidInterestUSD, repaidPrincipalUSD);
-        position.lastInterestUpdate = block.timestamp;
-        position.active = position.collateralETH > 0 || _getStoredDebt(position) > 0;
+
+        _reduceDebt(position, totalDebtUSD, repaidDebtUSD, repaidPrincipalUSD, msg.sender);
 
         fundALiquidityICFT += returnedPrincipalICFT;
         protocolRevenueICFT += returnedRevenueICFT;
         totalBorrowedICFT = _saturatingSub(totalBorrowedICFT, returnedPrincipalICFT);
 
         _emitFundAAccountingUpdate();
-        emit Repay(msg.sender, actualICFT, repaidDebtUSD, _getStoredDebt(position));
+        emit Repay(msg.sender, actualICFT, repaidDebtUSD, getDebt(msg.sender));
     }
 
-    /// @inheritdoc ILendingPool
-    function liquidate(address user, uint256 maxICFTToRepay, address collateralRecipient)
+    function liquidate(address user, address collateralAsset, uint256 maxICFTToRepay, address collateralRecipient)
         external
         nonReentrant
         whenNotPaused
         onlyRole(LIQUIDATION_BOT_ROLE)
     {
         if (collateralRecipient == address(0)) revert InvalidAddress();
+        if (maxICFTToRepay == 0) revert ZeroAmount();
 
         Position storage position = positions[user];
-        _accrueInterest(position, user);
-
-        uint256 totalDebtUSD = _getStoredDebt(position);
+        uint256 totalDebtUSD = _syncPosition(position, user);
         if (totalDebtUSD == 0) revert NoDebt();
-        if (!riskEngine.isLiquidatable(position.collateralETH, totalDebtUSD)) revert NotLiquidatable();
 
-        IRiskEngine.LiquidationOutcome memory outcome = riskEngine.calculateLiquidation(position.collateralETH, totalDebtUSD);
-        uint256 requiredICFT = priceOracle.convertUSDToICFT(outcome.debtToCoverUSD, true);
+        uint256 totalCollateralValueUSD = _getCollateralValueUSD(user, position);
+        if (!riskEngine.isLiquidatable(totalCollateralValueUSD, totalDebtUSD)) revert NotLiquidatable();
 
-        // Require a valid liquidation slice and respect the caller's max repayment constraint.
-        if (requiredICFT == 0 || outcome.collateralToSeizeETH == 0) revert NotLiquidatable();
+        LiquidationSettlement memory settlement =
+            _calculateLiquidationSettlement(user, collateralAsset, totalDebtUSD, totalCollateralValueUSD);
+        uint256 requiredICFT = priceOracle.convertUSDToICFT(settlement.debtToCoverUSD, true);
+
+        if (requiredICFT == 0 || settlement.collateralToSeizeAmount == 0) revert NotLiquidatable();
         if (requiredICFT > maxICFTToRepay) revert SlippageExceeded();
 
-        // Repay debt, update aggregate accounting, and transfer seized collateral to the requested recipient.
-        (uint256 repaidInterestUSD, uint256 repaidPrincipalUSD) =
-            _previewRepaymentBreakdown(position, outcome.debtToCoverUSD);
-        (uint256 returnedPrincipalICFT, uint256 returnedRevenueICFT) =
-            _splitReturnedICFT(requiredICFT, outcome.debtToCoverUSD, repaidPrincipalUSD);
+        DebtSettlement memory debtSettlement =
+            _prepareDebtSettlement(position, totalDebtUSD, settlement.debtToCoverUSD, requiredICFT);
 
         icft.safeTransferFrom(msg.sender, address(this), requiredICFT);
 
-        _reduceDebt(position, repaidInterestUSD, repaidPrincipalUSD);
+        _reduceDebt(position, totalDebtUSD, settlement.debtToCoverUSD, debtSettlement.repaidPrincipalUSD, user);
+        _decreaseCollateral(user, position, collateralAsset, settlement.collateralToSeizeAmount);
 
-        position.collateralETH -= outcome.collateralToSeizeETH;
-        position.lastInterestUpdate = block.timestamp;
-        position.active = position.collateralETH > 0 || _getStoredDebt(position) > 0;
+        fundALiquidityICFT += debtSettlement.returnedPrincipalICFT;
+        protocolRevenueICFT += debtSettlement.returnedRevenueICFT;
+        totalBorrowedICFT = _saturatingSub(totalBorrowedICFT, debtSettlement.returnedPrincipalICFT);
 
-        fundALiquidityICFT += returnedPrincipalICFT;
-        protocolRevenueICFT += returnedRevenueICFT;
-        totalBorrowedICFT = _saturatingSub(totalBorrowedICFT, returnedPrincipalICFT);
-
-        _sendEth(payable(collateralRecipient), outcome.collateralToSeizeETH);
+        _transferCollateral(collateralAsset, collateralRecipient, settlement.collateralToSeizeAmount);
 
         _emitFundAAccountingUpdate();
         emit Liquidation(
             user,
             msg.sender,
+            collateralAsset,
             requiredICFT,
-            outcome.debtToCoverUSD,
-            outcome.collateralToSeizeETH,
-            outcome.resultingLtvBps
+            settlement.debtToCoverUSD,
+            settlement.collateralToSeizeAmount,
+            settlement.collateralValueSeizedUSD,
+            settlement.resultingLtvBps
         );
     }
 
-    /**
-     * @notice Pauses collateral and borrow-side user actions.
-     * @dev Repayments remain intentionally available while paused.
-     */
     function pause() external onlyRole(PAUSER_ROLE) {
         _pause();
     }
 
-    /**
-     * @notice Unpauses the pool.
-     */
     function unpause() external onlyRole(PAUSER_ROLE) {
         _unpause();
     }
 
-    /**
-     * @notice Updates the minimum ICFT liquidity buffer kept unavailable for borrowing.
-     * @param newLiquidityBuffer New ICFT buffer amount.
-     */
     function setLiquidityBuffer(uint256 newLiquidityBuffer) external onlyRole(CONFIG_ADMIN_ROLE) {
         liquidityBuffer = newLiquidityBuffer;
         emit ParameterUpdated(keccak256("liquidityBuffer"), newLiquidityBuffer);
     }
 
-    /// @inheritdoc ILendingPool
+    function setCollateralAsset(address asset, bool enabled) external onlyRole(CONFIG_ADMIN_ROLE) {
+        if (asset != NATIVE_ASSET && enabled && !priceOracle.isCollateralAssetSupported(asset)) {
+            revert UnsupportedCollateralAsset();
+        }
+
+        _setCollateralAsset(asset, enabled, asset == NATIVE_ASSET);
+    }
+
+    function accrueInterest() external {
+        _accrueGlobalInterest();
+    }
+
+    function totalAccruedInterestUSD() public view returns (uint256) {
+        uint256 totalDebtUSD = _debtFromScaled(totalScaledDebtUSD, _previewBorrowIndex());
+        return totalDebtUSD > totalPrincipalDebtUSD ? totalDebtUSD - totalPrincipalDebtUSD : 0;
+    }
+
     function getPosition(address user) external view returns (Position memory) {
         return positions[user];
     }
 
-    /// @inheritdoc ILendingPool
     function getDebt(address user) public view returns (uint256) {
         Position memory position = positions[user];
-        return _previewDebt(position);
+        return _debtFromScaled(position.scaledDebtUSD, _previewBorrowIndex());
     }
 
-    /**
-     * @notice Returns the current LTV for a user in basis points.
-     * @param user Borrower address.
-     * @return ltvBps Current LTV in basis points.
-     */
-    function getLTV(address user) external view returns (uint256) {
-        Position memory position = positions[user];
-        return riskEngine.calculateLTV(position.collateralETH, _previewDebt(position));
+    function getCollateralBalance(address user, address asset) public view returns (uint256 balance) {
+        if (asset == NATIVE_ASSET) {
+            return positions[user].collateralETH;
+        }
+
+        return erc20CollateralBalances[user][asset];
     }
 
-    /**
-     * @notice Returns current pool utilization in basis points.
-     * @return utilizationBps Utilization in basis points.
-     */
-    function getUtilization() public view returns (uint256) {
+    function getSupportedCollateralAssets() external view returns (address[] memory assets) {
+        return supportedCollateralAssets;
+    }
+
+    function getCollateralAsset(address asset) external view returns (CollateralAsset memory collateralAsset) {
+        return collateralAssets[asset];
+    }
+
+    function getLTV(address user) external view returns (uint256 ltvBps) {
+        return riskEngine.calculateLTV(_getCollateralValueUSD(user, positions[user]), getDebt(user));
+    }
+
+    function getUtilization() public view returns (uint256 utilizationBps) {
         return _calculateUtilization(totalBorrowedICFT);
     }
 
-    /**
-     * @notice Returns the USD accounting value of the user's collateral.
-     * @param user Borrower address.
-     * @return collateralValueUSD Collateral value in internal USD units.
-     */
-    function getCollateralValueUSD(address user) external view returns (uint256) {
-        return riskEngine.getCollateralValueUSD(positions[user].collateralETH);
+    function getCollateralValueUSD(address user) external view returns (uint256 collateralValueUSD) {
+        return _getCollateralValueUSD(user, positions[user]);
     }
 
-    /**
-     * @notice Returns accrued interest including not-yet-stored interest since the last update.
-     * @param user Borrower address.
-     * @return accruedInterestUSD Position interest in internal USD units.
-     */
-    function getCurrentInterest(address user) external view returns (uint256) {
+    function getCurrentInterest(address user) external view returns (uint256 accruedInterestUSD) {
         Position memory position = positions[user];
-        return _previewAccruedInterest(position);
+        uint256 totalDebtUSD = _debtFromScaled(position.scaledDebtUSD, _previewBorrowIndex());
+        return totalDebtUSD > position.principalDebtUSD ? totalDebtUSD - position.principalDebtUSD : 0;
     }
 
-    /**
-     * @notice Returns the maximum additional ICFT the user can currently borrow.
-     * @param user Borrower address.
-     * @return availableBorrowICFT Maximum additional ICFT borrowable right now.
-     */
-    function getAvailableBorrow(address user) external view returns (uint256) {
+    function getAvailableBorrow(address user) external view returns (uint256 availableBorrowICFT) {
         Position memory position = positions[user];
-        uint256 debtUSD = _previewDebt(position);
-        uint256 maxBorrowUSD = riskEngine.getMaxBorrowUSD(position.collateralETH);
+        uint256 debtUSD = _debtFromScaled(position.scaledDebtUSD, _previewBorrowIndex());
+        uint256 maxBorrowUSD = riskEngine.getMaxBorrowUSD(_getCollateralValueUSD(user, position));
 
         if (maxBorrowUSD <= debtUSD) return 0;
 
@@ -394,17 +483,14 @@ contract LendingPool is ILendingPool, AccessControl, Pausable, ReentrancyGuard {
         return remainingBorrowICFT < availableLiquidity ? remainingBorrowICFT : availableLiquidity;
     }
 
-    /// @inheritdoc ILendingPool
     function isLiquidatable(address user) external view returns (bool) {
-        Position memory position = positions[user];
-        return riskEngine.isLiquidatable(position.collateralETH, _previewDebt(position));
+        return riskEngine.isLiquidatable(
+            _getCollateralValueUSD(user, positions[user]),
+            _debtFromScaled(positions[user].scaledDebtUSD, _previewBorrowIndex())
+        );
     }
 
-    /**
-     * @notice Returns ICFT liquidity available for new borrows after the configured buffer.
-     * @return availableLiquidityICFT ICFT principal available to lend.
-     */
-    function getAvailableLiquidity() public view returns (uint256) {
+    function getAvailableLiquidity() public view returns (uint256 availableLiquidityICFT) {
         uint256 spendablePrincipalBalance = getSpendablePrincipalBalance();
         uint256 principalInventory = fundALiquidityICFT < spendablePrincipalBalance ? fundALiquidityICFT : spendablePrincipalBalance;
 
@@ -413,144 +499,294 @@ contract LendingPool is ILendingPool, AccessControl, Pausable, ReentrancyGuard {
         return principalInventory - liquidityBuffer;
     }
 
-    /**
-     * @notice Returns the ICFT principal inventory excluding protocol revenue held by the pool.
-     * @return spendablePrincipalICFT Principal inventory still usable for lending.
-     */
-    function getSpendablePrincipalBalance() public view returns (uint256) {
+    function getSpendablePrincipalBalance() public view returns (uint256 spendablePrincipalICFT) {
         uint256 rawBalance = icft.balanceOf(address(this));
         return _saturatingSub(rawBalance, protocolRevenueICFT);
     }
 
-    /**
-     * @notice Accrues pending interest onto a position and global accounting.
-     * @param position User position storage pointer.
-     * @param user Borrower address used for event emission.
-     */
-    function _accrueInterest(Position storage position, address user) internal {
-        if (position.lastInterestUpdate == 0) {
-            position.lastInterestUpdate = block.timestamp;
+    function _withdrawCollateral(address user, address asset, uint256 amount) internal {
+        if (amount == 0) revert ZeroAmount();
+        if (!_isKnownCollateralAsset(asset)) revert UnsupportedCollateralAsset();
+
+        Position storage position = positions[user];
+        uint256 currentDebtUSD = _syncPosition(position, user);
+        uint256 currentBalance = _getCollateralBalanceStorage(user, position, asset);
+        if (amount > currentBalance) revert InsufficientCollateral();
+
+        uint256 currentCollateralValueUSD = _getCollateralValueUSD(user, position);
+        uint256 withdrawnValueUSD = riskEngine.getCollateralValueUSD(asset, amount);
+        uint256 remainingCollateralValueUSD =
+            currentCollateralValueUSD > withdrawnValueUSD ? currentCollateralValueUSD - withdrawnValueUSD : 0;
+
+        if (currentDebtUSD > 0) {
+            uint256 resultingLtv = riskEngine.calculateLTV(remainingCollateralValueUSD, currentDebtUSD);
+            if (resultingLtv > riskEngine.getMaxLTVBps()) revert BorrowExceedsLTV();
+        }
+
+        _decreaseCollateral(user, position, asset, amount);
+        _transferCollateral(asset, user, amount);
+
+        emit WithdrawCollateral(user, asset, amount, currentBalance - amount);
+    }
+
+    function _syncPosition(Position storage position, address user) internal returns (uint256 totalDebtUSD) {
+        uint256 previousIndex = borrowIndex;
+        uint256 debtBeforeUSD = _debtFromScaled(position.scaledDebtUSD, previousIndex);
+
+        _accrueGlobalInterest();
+
+        totalDebtUSD = _debtFromScaled(position.scaledDebtUSD, borrowIndex);
+        if (totalDebtUSD > debtBeforeUSD && totalDebtUSD > position.principalDebtUSD) {
+            emit InterestAccrued(user, totalDebtUSD - debtBeforeUSD, totalDebtUSD - position.principalDebtUSD);
+        }
+
+        position.lastAccrualIndex = borrowIndex;
+    }
+
+    function _accrueGlobalInterest() internal {
+        uint256 previousAccrualTime = lastAccrualTime;
+        if (block.timestamp <= previousAccrualTime) {
             return;
         }
 
-        uint256 accrued = _previewIncrementalInterest(position);
-        if (accrued > 0) {
-            position.accruedInterestUSD += accrued;
-            totalAccruedInterestUSD += accrued;
-            emit InterestAccrued(user, accrued, position.accruedInterestUSD);
+        uint256 previousBorrowIndex = borrowIndex;
+        lastAccrualTime = block.timestamp;
+
+        if (totalScaledDebtUSD == 0 || totalBorrowedICFT == 0) {
+            return;
         }
 
-        position.lastInterestUpdate = block.timestamp;
-    }
-
-    /**
-     * @notice Returns total debt including freshly previewed interest.
-     * @param position Position snapshot.
-     * @return debtUSD Total debt in internal USD units.
-     */
-    function _previewDebt(Position memory position) internal view returns (uint256) {
-        return _getStoredDebt(position) + _previewIncrementalInterest(position);
-    }
-
-    /**
-     * @notice Returns accrued interest including any not-yet-materialized incremental interest.
-     * @param position Position snapshot.
-     * @return accruedInterestUSD Total accrued interest in internal USD units.
-     */
-    function _previewAccruedInterest(Position memory position) internal view returns (uint256) {
-        return position.accruedInterestUSD + _previewIncrementalInterest(position);
-    }
-
-    /**
-     * @notice Previews incremental simple interest since the last accrual checkpoint.
-     * @param position Position snapshot.
-     * @return incrementalInterestUSD Pending interest in internal USD units.
-     */
-    function _previewIncrementalInterest(Position memory position) internal view returns (uint256) {
-        if (position.lastInterestUpdate == 0 || position.principalDebtUSD == 0 || block.timestamp <= position.lastInterestUpdate) {
-            return 0;
+        uint256 elapsed = block.timestamp - previousAccrualTime;
+        uint256 aprBps = interestRateModel.getBorrowRateBps(_calculateUtilization(totalBorrowedICFT));
+        uint256 interestFactor = (previousBorrowIndex * aprBps * elapsed) / (BPS * YEAR);
+        if (interestFactor == 0) {
+            return;
         }
 
-        // Use current pool utilization to derive the APR applied to the user's principal balance.
-        uint256 elapsed = block.timestamp - position.lastInterestUpdate;
-        uint256 aprBps = interestRateModel.getBorrowRateBps(getUtilization());
+        borrowIndex = previousBorrowIndex + interestFactor;
 
-        return (position.principalDebtUSD * aprBps * elapsed) / (BPS * YEAR);
+        emit GlobalInterestAccrued(
+            aprBps,
+            previousBorrowIndex,
+            borrowIndex,
+            _debtFromScaled(totalScaledDebtUSD, borrowIndex),
+            totalAccruedInterestUSD()
+        );
     }
 
-    /**
-     * @notice Returns stored debt without previewing any new interest.
-     * @param position Position snapshot.
-     * @return storedDebtUSD Stored principal plus stored accrued interest.
-     */
-    function _getStoredDebt(Position memory position) internal pure returns (uint256) {
-        return position.principalDebtUSD + position.accruedInterestUSD;
-    }
+    function _reduceDebt(
+        Position storage position,
+        uint256 totalDebtUSD,
+        uint256 repaidDebtUSD,
+        uint256 repaidPrincipalUSD,
+        address user
+    ) internal {
+        uint256 previousScaledDebtUSD = position.scaledDebtUSD;
 
-    /**
-     * @notice Reduces a user's stored debt buckets and global aggregates after repayment or liquidation.
-     * @param position User position storage pointer.
-     * @param repaidInterestUSD Interest portion repaid in internal USD units.
-     * @param repaidPrincipalUSD Principal portion repaid in internal USD units.
-     */
-    function _reduceDebt(Position storage position, uint256 repaidInterestUSD, uint256 repaidPrincipalUSD) internal {
-        if (repaidInterestUSD > 0) {
-            position.accruedInterestUSD -= repaidInterestUSD;
-            totalAccruedInterestUSD -= repaidInterestUSD;
+        if (repaidDebtUSD >= totalDebtUSD) {
+            totalScaledDebtUSD -= previousScaledDebtUSD;
+            position.scaledDebtUSD = 0;
+        } else {
+            uint256 remainingDebtUSD = totalDebtUSD - repaidDebtUSD;
+            uint256 newScaledDebtUSD = _toScaledDebtRoundUp(remainingDebtUSD, borrowIndex);
+
+            if (newScaledDebtUSD >= previousScaledDebtUSD) {
+                newScaledDebtUSD = previousScaledDebtUSD - 1;
+            }
+
+            totalScaledDebtUSD -= previousScaledDebtUSD - newScaledDebtUSD;
+            position.scaledDebtUSD = newScaledDebtUSD;
         }
 
         if (repaidPrincipalUSD > 0) {
             position.principalDebtUSD -= repaidPrincipalUSD;
             totalPrincipalDebtUSD -= repaidPrincipalUSD;
         }
+
+        position.lastAccrualIndex = borrowIndex;
+        position.active = _hasAnyCollateral(user, position) || position.scaledDebtUSD > 0;
     }
 
-    /**
-     * @notice Returns projected utilization after an additional borrow.
-     * @param amountICFT Additional ICFT principal to borrow.
-     * @return utilizationBps Projected utilization in basis points.
-     */
-    function _calculateUtilizationAfterBorrow(uint256 amountICFT) internal view returns (uint256) {
-        return _calculateUtilization(totalBorrowedICFT + amountICFT);
+    function _calculateLiquidationSettlement(
+        address user,
+        address collateralAsset,
+        uint256 totalDebtUSD,
+        uint256 totalCollateralValueUSD
+    ) internal view returns (LiquidationSettlement memory settlement) {
+        if (!_isKnownCollateralAsset(collateralAsset)) revert UnsupportedCollateralAsset();
+
+        uint256 collateralBalance = getCollateralBalance(user, collateralAsset);
+        if (collateralBalance == 0) return settlement;
+
+        IRiskEngine.LiquidationOutcome memory outcome =
+            riskEngine.calculateLiquidation(totalCollateralValueUSD, totalDebtUSD);
+        if (outcome.debtToCoverUSD == 0 || outcome.collateralValueSeizedUSD == 0) {
+            return settlement;
+        }
+
+        uint256 assetValueUSD = riskEngine.getCollateralValueUSD(collateralAsset, collateralBalance);
+        uint256 desiredSeizedValueUSD =
+            outcome.collateralValueSeizedUSD < assetValueUSD ? outcome.collateralValueSeizedUSD : assetValueUSD;
+
+        uint256 seizeAmount = priceOracle.convertUSDToAsset(collateralAsset, desiredSeizedValueUSD, false);
+        if (seizeAmount == 0 && desiredSeizedValueUSD > 0) {
+            seizeAmount = 1;
+        }
+        if (seizeAmount > collateralBalance) {
+            seizeAmount = collateralBalance;
+        }
+
+        uint256 actualSeizedValueUSD = riskEngine.getCollateralValueUSD(collateralAsset, seizeAmount);
+        if (actualSeizedValueUSD > assetValueUSD) {
+            actualSeizedValueUSD = assetValueUSD;
+        }
+
+        uint256 debtToCoverUSD = (actualSeizedValueUSD * BPS) / (BPS + riskEngine.getLiquidationBonusBps());
+        if (debtToCoverUSD > totalDebtUSD) {
+            debtToCoverUSD = totalDebtUSD;
+        }
+
+        uint256 remainingDebtUSD = totalDebtUSD > debtToCoverUSD ? totalDebtUSD - debtToCoverUSD : 0;
+        uint256 remainingCollateralValueUSD =
+            totalCollateralValueUSD > actualSeizedValueUSD ? totalCollateralValueUSD - actualSeizedValueUSD : 0;
+
+        settlement = LiquidationSettlement({
+            debtToCoverUSD: debtToCoverUSD,
+            collateralToSeizeAmount: seizeAmount,
+            collateralValueSeizedUSD: actualSeizedValueUSD,
+            resultingLtvBps: riskEngine.calculateLTV(remainingCollateralValueUSD, remainingDebtUSD)
+        });
     }
 
-    /**
-     * @notice Calculates pool utilization relative to the original Fund A allocation.
-     * @param borrowedICFT Borrowed ICFT principal amount.
-     * @return utilizationBps Utilization in basis points.
-     */
-    function _calculateUtilization(uint256 borrowedICFT) internal view returns (uint256) {
-        return (borrowedICFT * BPS) / fundAAllocation;
-    }
-
-    /**
-     * @notice Splits a debt repayment into interest and principal buckets.
-     * @param position Position snapshot.
-     * @param repaidDebtUSD Total debt value being extinguished in internal USD units.
-     * @return repaidInterestUSD Interest component of the repayment.
-     * @return repaidPrincipalUSD Principal component of the repayment.
-     */
-    function _previewRepaymentBreakdown(Position memory position, uint256 repaidDebtUSD)
-        internal
-        pure
-        returns (uint256 repaidInterestUSD, uint256 repaidPrincipalUSD)
-    {
-        repaidInterestUSD = repaidDebtUSD < position.accruedInterestUSD ? repaidDebtUSD : position.accruedInterestUSD;
-        repaidPrincipalUSD = repaidDebtUSD - repaidInterestUSD;
+    function _prepareDebtSettlement(
+        Position storage position,
+        uint256 totalDebtUSD,
+        uint256 repaidDebtUSD,
+        uint256 returnedICFT
+    ) internal view returns (DebtSettlement memory debtSettlement) {
+        uint256 currentInterestUSD = totalDebtUSD - position.principalDebtUSD;
+        uint256 repaidInterestUSD = repaidDebtUSD < currentInterestUSD ? repaidDebtUSD : currentInterestUSD;
+        uint256 repaidPrincipalUSD = repaidDebtUSD - repaidInterestUSD;
 
         if (repaidPrincipalUSD > position.principalDebtUSD) {
             repaidPrincipalUSD = position.principalDebtUSD;
         }
+
+        (uint256 returnedPrincipalICFT, uint256 returnedRevenueICFT) =
+            _splitReturnedICFT(returnedICFT, repaidDebtUSD, repaidPrincipalUSD);
+
+        debtSettlement = DebtSettlement({
+            repaidPrincipalUSD: repaidPrincipalUSD,
+            returnedPrincipalICFT: returnedPrincipalICFT,
+            returnedRevenueICFT: returnedRevenueICFT
+        });
     }
 
-    /**
-     * @notice Splits returned ICFT between restored principal liquidity and protocol revenue.
-     * @param totalReturnedICFT Total ICFT returned to the pool.
-     * @param repaidDebtUSD Total debt value extinguished in internal USD units.
-     * @param repaidPrincipalUSD Principal portion of the extinguished debt.
-     * @return returnedPrincipalICFT ICFT attributed back to Fund A principal.
-     * @return returnedRevenueICFT ICFT attributed to protocol revenue.
-     */
+    function _getCollateralValueUSD(address user, Position memory position)
+        internal
+        view
+        returns (uint256 collateralValueUSD)
+    {
+        uint256 assetsLength = supportedCollateralAssets.length;
+
+        for (uint256 i = 0; i < assetsLength; ++i) {
+            address asset = supportedCollateralAssets[i];
+            uint256 balance = _getCollateralBalanceMemory(user, position, asset);
+
+            if (balance == 0) {
+                continue;
+            }
+
+            collateralValueUSD += riskEngine.getCollateralValueUSD(asset, balance);
+        }
+    }
+
+    function _getCollateralBalanceMemory(address user, Position memory position, address asset)
+        internal
+        view
+        returns (uint256 balance)
+    {
+        if (asset == NATIVE_ASSET) {
+            return position.collateralETH;
+        }
+
+        return erc20CollateralBalances[user][asset];
+    }
+
+    function _getCollateralBalanceStorage(address user, Position storage position, address asset)
+        internal
+        view
+        returns (uint256 balance)
+    {
+        if (asset == NATIVE_ASSET) {
+            return position.collateralETH;
+        }
+
+        return erc20CollateralBalances[user][asset];
+    }
+
+    function _decreaseCollateral(address user, Position storage position, address asset, uint256 amount) internal {
+        if (asset == NATIVE_ASSET) {
+            position.collateralETH -= amount;
+        } else {
+            erc20CollateralBalances[user][asset] -= amount;
+        }
+
+        position.lastAccrualIndex = borrowIndex;
+        position.active = _hasAnyCollateral(user, position) || position.scaledDebtUSD > 0;
+    }
+
+    function _transferCollateral(address asset, address recipient, uint256 amount) internal {
+        if (asset == NATIVE_ASSET) {
+            payable(recipient).sendValue(amount);
+            return;
+        }
+
+        IERC20(asset).safeTransfer(recipient, amount);
+    }
+
+    function _setCollateralAsset(address asset, bool enabled, bool isNative) internal {
+        if (!collateralAssetKnown[asset]) {
+            collateralAssetKnown[asset] = true;
+            supportedCollateralAssets.push(asset);
+        }
+
+        collateralAssets[asset] = CollateralAsset({enabled: enabled, isNative: isNative});
+        emit CollateralAssetUpdated(asset, enabled, isNative);
+    }
+
+    function _isKnownCollateralAsset(address asset) internal view returns (bool known) {
+        return collateralAssetKnown[asset];
+    }
+
+    function _hasAnyCollateral(address user, Position storage position) internal view returns (bool hasCollateral) {
+        if (position.collateralETH > 0) {
+            return true;
+        }
+
+        uint256 assetsLength = supportedCollateralAssets.length;
+        for (uint256 i = 0; i < assetsLength; ++i) {
+            address asset = supportedCollateralAssets[i];
+            if (asset == NATIVE_ASSET) {
+                continue;
+            }
+
+            if (erc20CollateralBalances[user][asset] > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function _calculateUtilizationAfterBorrow(uint256 amountICFT) internal view returns (uint256 utilizationBps) {
+        return _calculateUtilization(totalBorrowedICFT + amountICFT);
+    }
+
+    function _calculateUtilization(uint256 borrowedICFT) internal view returns (uint256 utilizationBps) {
+        return (borrowedICFT * BPS) / fundAAllocation;
+    }
+
     function _splitReturnedICFT(uint256 totalReturnedICFT, uint256 repaidDebtUSD, uint256 repaidPrincipalUSD)
         internal
         pure
@@ -572,36 +808,44 @@ contract LendingPool is ILendingPool, AccessControl, Pausable, ReentrancyGuard {
         returnedRevenueICFT = totalReturnedICFT - returnedPrincipalICFT;
     }
 
-    /**
-     * @notice Emits the aggregate Fund A accounting snapshot.
-     */
     function _emitFundAAccountingUpdate() internal {
         emit FundAAccountingUpdated(
             fundALiquidityICFT,
             totalBorrowedICFT,
             totalPrincipalDebtUSD,
-            totalAccruedInterestUSD,
+            totalAccruedInterestUSD(),
             protocolRevenueICFT
         );
     }
 
-    /**
-     * @notice Sends ETH and reverts on transfer failure.
-     * @param recipient ETH recipient.
-     * @param amount ETH amount in wei.
-     */
-    function _sendEth(address payable recipient, uint256 amount) internal {
-        (bool success,) = recipient.call{value: amount}("");
-        if (!success) revert EthTransferFailed();
+    function _debtFromScaled(uint256 scaledDebtUSD, uint256 index) internal pure returns (uint256 debtUSD) {
+        return (scaledDebtUSD * index) / INDEX_SCALE;
     }
 
-    /**
-     * @notice Returns `a - b`, saturating at zero instead of reverting.
-     * @param a Left operand.
-     * @param b Right operand.
-     * @return result Saturating subtraction result.
-     */
-    function _saturatingSub(uint256 a, uint256 b) internal pure returns (uint256) {
+    function _toScaledDebtRoundUp(uint256 debtUSD, uint256 index) internal pure returns (uint256 scaledDebtUSD) {
+        if (debtUSD == 0) {
+            return 0;
+        }
+
+        scaledDebtUSD = (debtUSD * INDEX_SCALE) / index;
+        if ((debtUSD * INDEX_SCALE) % index != 0) {
+            scaledDebtUSD += 1;
+        }
+    }
+
+    function _previewBorrowIndex() internal view returns (uint256 previewIndex) {
+        previewIndex = borrowIndex;
+
+        if (block.timestamp <= lastAccrualTime || totalScaledDebtUSD == 0 || totalBorrowedICFT == 0) {
+            return previewIndex;
+        }
+
+        uint256 elapsed = block.timestamp - lastAccrualTime;
+        uint256 aprBps = interestRateModel.getBorrowRateBps(_calculateUtilization(totalBorrowedICFT));
+        previewIndex += (previewIndex * aprBps * elapsed) / (BPS * YEAR);
+    }
+
+    function _saturatingSub(uint256 a, uint256 b) internal pure returns (uint256 result) {
         return a > b ? a - b : 0;
     }
 }

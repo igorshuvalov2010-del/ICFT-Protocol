@@ -2,12 +2,13 @@
 
 ## Purpose
 
-This repository contains the earliest executable MVP stage of the ICFT lending protocol.
+This repository contains the earliest executable upgradeable testnet stage of the ICFT lending protocol.
+
+The current transition target is documented in `docs/TESTNET_BASELINE.md`.
 
 This codebase is **not** ready for:
 
 - mainnet
-- public testnet
 - real users
 - real money
 
@@ -15,6 +16,7 @@ The correct environment for this snapshot is:
 
 - `localhost`
 - `anvil`
+- carefully controlled public testnets such as Ethereum Sepolia
 - developer machines
 - architecture exploration
 - unit/invariant/fuzz testing
@@ -23,7 +25,7 @@ The correct environment for this snapshot is:
 
 The current system allows a developer to simulate the following flow:
 
-1. a user deposits `ETH` as collateral
+1. a user deposits `ETH`, `wBTC`, or `wstETH` as collateral
 2. a user borrows `ICFT`
 3. the protocol tracks debt in an internal `USD` accounting unit
 4. interest accrues in that internal `USD` accounting unit
@@ -56,10 +58,13 @@ Not solved in this stage:
 Because of that, the repository should be treated as:
 
 - a local prototype
+- a testnet engineering baseline
 - a code baseline
 - a design and testing artifact
 
-It should **not** be treated as a deploy-and-use protocol.
+It should **not** be treated as a deploy-and-use production protocol.
+
+The repo already includes the first **upgradeable testnet baseline** and this document describes that state, including the current testnet-only compromises.
 
 ## Directory Map
 
@@ -73,7 +78,10 @@ It should **not** be treated as a deploy-and-use protocol.
 - `PriceOracle.sol`
   Oracle layer for:
   - `ETH/USD` via Chainlink
+  - `wBTC/USD` via configurable collateral feeds
+  - `wstETH/USD` via configurable collateral feeds
   - `ICFT/USD` via manual admin price or optional Chainlink source
+  - current Sepolia `wstETH` guidance in this repo uses a mock USD feed, which is acceptable for testing but not for production
 
 ### `src/core/ICFT/risk`
 
@@ -145,7 +153,10 @@ Main files:
 ### `script`
 
 - `DeployICFTProtocol.s.sol`
-  Foundry deployment script intended for local deployment and controlled experimentation.
+  Foundry deployment script for local deployment and controlled public-testnet experimentation.
+
+- `UpgradeICFTModule.s.sol`
+  Foundry upgrade script for proxy-based module upgrades.
 
 ### `docs`
 
@@ -217,14 +228,14 @@ Instead of exposing a broad permissionless liquidation path, the helper:
 - previews a liquidation
 - pulls ICFT from the operator
 - calls the pool liquidation
-- forwards seized ETH
+  - forwards seized collateral
 - returns unused ICFT if needed
 
 ## Accounting Model
 
 The most important architectural point:
 
-- collateral is `ETH`
+- collateral is a basket of supported assets
 - borrowed asset is `ICFT`
 - debt accounting unit is internal `USD`
 
@@ -258,7 +269,7 @@ This is still only an MVP approximation, not a treasury-grade accounting system.
 
 ## Why This Is Localhost-Only
 
-This snapshot still depends on assumptions that are acceptable for local development but weak for public deployment:
+This snapshot still depends on assumptions that are acceptable for early public-testnet development but weak for production deployment:
 
 - manual ICFT price support
 - restricted liquidation operator model
@@ -267,15 +278,34 @@ This snapshot still depends on assumptions that are acceptable for local develop
 - no full operational playbook
 - no production observability
 - incomplete economic validation
+- testnet-specific collateral assumptions for `wBTC`
+- mock `wstETH/USD` feed flow on Sepolia
+- hot-wallet style operator flow unless the team moves roles to a multisig
 
 So the recommended workflow is:
 
-1. run `anvil`
-2. fill `.env`
-3. deploy locally
-4. run tests
-5. inspect behavior
-6. keep iterating
+1. fill `.env`
+2. run `forge build`
+3. run `forge test`
+4. deploy to `anvil` or Sepolia
+5. verify proxy/admin/collateral state
+6. inspect behavior
+7. keep iterating
+
+## Current Sepolia Notes
+
+The current recommended engineering configuration for Sepolia is:
+
+- native `ETH` collateral enabled by default;
+- `wBTC` enabled only when the team controls or trusts the chosen test token address;
+- `wstETH` enabled only with an explicitly documented testnet oracle setup;
+- `PriceOracle` and `LendingPool` configured through admin calls after deployment or during deployment when the deployer is also the protocol admin.
+
+The most important production gap in the current public-testnet setup is oracle realism:
+
+- `ETH/USD` can rely on Chainlink;
+- `wBTC/USD` can rely on a network-specific trusted feed when available;
+- `wstETH` should eventually move to a production-grade pricing path such as a trusted direct feed or a composed `wstETH/ETH * ETH/USD` design after a dedicated oracle upgrade.
 
 ## Recommended Files To Commit
 

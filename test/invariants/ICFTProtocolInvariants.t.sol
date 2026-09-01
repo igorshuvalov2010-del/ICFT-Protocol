@@ -79,8 +79,8 @@ contract ProtocolHandler is Test {
     struct ILendingPoolPosition {
         uint256 collateralETH;
         uint256 principalDebtUSD;
-        uint256 accruedInterestUSD;
-        uint256 lastInterestUpdate;
+        uint256 scaledDebtUSD;
+        uint256 lastAccrualIndex;
         bool active;
     }
 
@@ -88,16 +88,16 @@ contract ProtocolHandler is Test {
         (
             uint256 collateralETH,
             uint256 principalDebtUSD,
-            uint256 accruedInterestUSD,
-            uint256 lastInterestUpdate,
+            uint256 scaledDebtUSD,
+            uint256 lastAccrualIndex,
             bool active
         ) = lendingPool.positions(actor);
 
         position = ILendingPoolPosition({
             collateralETH: collateralETH,
             principalDebtUSD: principalDebtUSD,
-            accruedInterestUSD: accruedInterestUSD,
-            lastInterestUpdate: lastInterestUpdate,
+            scaledDebtUSD: scaledDebtUSD,
+            lastAccrualIndex: lastAccrualIndex,
             active: active
         });
     }

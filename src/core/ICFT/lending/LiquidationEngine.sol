@@ -1,8 +1,96 @@
 // SPDX-License-Identifier: GPL-3.0-only
+/**
+ * NOTICE
+ *
+ * ICFT is an upgradeable lending and programmable credit protocol developed
+ * to let users borrow ICFT against on-chain collateral through transparent,
+ * modular, and upgradeable smart contracts on EVM-compatible blockchains.
+ *
+ * Copyright (C) 2026, ICFT contributors.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+//                                                     .,itTTTTTTTTl:.
+//                                           .;iFYCLJYYUXnF!Ii;iI!FnYJCCQwqwnli.
+//                                       lxvUXFtl,.........................,!frQqCzf
+//                                  .;zzcr:.......................................,uLwml,
+//                               IjznT:...............................................:jXmvt
+//                            ;cXn:.......................................................,vLJl
+//                         ;rUni.............................................................;uJui
+//                       IUUI...................................................................IYUl
+//                     fJv;.......................................................................,nYT
+//                   TLU:...........................................................................:cX!
+//                 !QXi...............................................................................;nzI
+//                CQi...................................................................................;vu
+//             .xwx.......................................................................................TvT
+//             JY,...................................;vCLwbkkkkkbkkkkdmCCj,................................,rr
+//           !wv...............................,iFpdddpmQQQLCCLQQQmqbbbddddddYl:.............................Tni
+//          jw!.............................,jYwwcf!..................lfvqqqqqwqLc:...........................in!
+//         UQ!..........................,,lQLz,.............................XLmmQmQwl,.........................irj
+//       .vw;..........................,xLu;..................................:xCQQQQLc.........................:xT.
+//       nm:.........................,jQ:........................................,LQQQQQv........................,rT
+//      vLl.........................tc!............................................IcLLLLLf.......................;rT
+//     rwl.........................z!................................................lYJJUJr,......................;x!
+//    iLF........................lj...................................................,jYYYYU:......................lr,
+//    Jc:.......................:!......................................................!YUUUYl......................Tj
+//   tQt.......................!,........................................................,JJJJU;.....................ixI
+//   CY.......................I:..........................................................;UCLCL......................jr
+//  jQ:......................,:............................................................tccccu.....................,n!
+// .nX......................................,;;,.......................................................................rT
+// ;Li.................:ppm:..........:Tqbbdddpppqqm!;.......hoooooooooooooooooqI,vaoooooooooooooooooobT...............;u,
+// IC;.................:ddw:........lUbbbbQrFFFfxmqwwwUi.....hoooaaoooooaoaaaak:.YaooaoaaooaaaaaooaaoaI................:v:
+// xv,.................:bbq:.......nbbdU,..........:CQ!......kaam.........................Ihhpl........................,rt
+// Uj..................:bbq:.....:QddL;...IF!utTf............bkkm.........................Ikkql.........................fn
+// JF..................:ddw:....,vppc,..,u,X,v.II,x,.........dbbm.........................Ibbwl.........................Tz
+// Uf..................:ppm:....IqqLI..t,.F,.c,.!,.F.........qddm.........................Iddml.........................fX
+// Uf..................:wwQ:....!wwJ..::.::..z...n..v........wpqqwwwwwwwwwwwmT............ippQl.........................fY
+// Xf.................,:mmC:....ImmU..,;.,;..c,..x..r........mqwqwwqqqqqqqqp!.............iqqQl.........................FU
+// Xf..................:LLJ:...,ILLCT..t,.F,.x..t,.x.........mwwQ::::::::::...............iwwLl.........................jJ
+// xj..................:CJY:.....rCJz:..:F;F,j,;;iF:.........QmmL.........................iQQCl........................,un
+// Iv:.................:UUX:.....,vUUUT...:,Trfl;,...........LQmQ.........................iQQJl........................;JI
+// :c:.................:XXc:.......lzXXU!:........:!XYni.....QmmQ.........................iQmCl........................iQi
+// .jf.................,zcv,........,lzzzzznxxxxnczzzzf......QmmQ.........................immCl........................uc,
+//  tv.................,Fjf,............FnucccvvcunT.........UJJY.........................iJJXI........................wx
+//  ,xf.....................innni,....................................................................................zQ:
+//   tj:....................,jCJUT........................,.................................l........................iQu
+//    xt......................rJCLT.....................................,.................,I,.......................,um
+//    :x:......................jJCCQ,....................................................,Y.........................ipI
+//     lr:......................;XCCJt..................................................tf.........................;qn
+//      FF,.......................XCCLU;...............................................U;.........................,JL
+//       fT........................;XLLLYT.................................,.........un..........................,XU
+//       .Tj.........................;LQQQQF......................................:zX:...........................QY:
+//         fF:.........................ivmmmmYF,...............................:fQr,...........................;JL.
+//          lj,..........................,IQqqqqQQl.........................izQYI.............................,Qv
+//           Irl.............................iUmdddddputti...........:lTFQpLc;...............................tqx
+//            .rF................................ITcbkkkkkkkkkbddbkkkkpnTi..................................cwI
+//              txl........................................:IlI:..........................................iwc,
+//               ,rj.....................................................................................Xm!
+//                 tuF................................................................................,umu
+//                   fuT.............................................................................xmv.
+//                     Tcr,........................................................................fQU
+//                       !znI...................................................................;Xmj,
+//                         :uXr,..............................................................jQCl
+//                            !cXj:.......................................................,FLLj.
+//                              .lYJz; ............................................... ,cLQf,
+//                                  inYLnt;.......................................:tjLCvl
+//                                      ;tJmCUx,..............................TUJmLTi.
+//                                           .tXYQqqLnT!t!Ii;;::;iIl!!tjUmmLYXj,
 pragma solidity ^0.8.20;
 
-import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
-import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
@@ -14,43 +102,62 @@ import {EthTransferFailed, InvalidAddress, InvalidAmount, MaxRepayBelowRequired}
 
 /**
  * @title LiquidationEngine
- * @notice Restricted liquidation helper that repays ICFT debt and forwards seized ETH.
+ * @notice Restricted liquidation helper that repays ICFT debt and routes seized collateral to the chosen beneficiary.
  * @dev The helper wraps the pool's liquidation entrypoint so operators can work from a richer preview surface.
- * @dev Seized ETH is temporarily received by this contract and then forwarded to the chosen beneficiary.
+ * @dev Collateral is selected explicitly per execution because user baskets can now contain ETH, wBTC, wstETH, and future assets.
  * @dev Access is intentionally role-restricted for the MVP bot-driven liquidation model.
  *
- * @custom:version 1.0.0
+ * @custom:version 1.2.0
  */
-contract LiquidationEngine is ILiquidationEngine, AccessControl, ReentrancyGuard {
+contract LiquidationEngine is Initializable, ILiquidationEngine, AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     using SafeERC20 for IERC20;
 
-    /// @notice Role allowed to administer engine configuration and operators.
+    struct ExecutionSnapshot {
+        uint256 debtBefore;
+        uint256 collateralBefore;
+        uint256 icftBefore;
+        uint256 requestedTransfer;
+    }
+
+    struct ExecutionOutcome {
+        uint256 repaidIcft;
+        uint256 repaidUsd;
+        uint256 seizedCollateralAmount;
+        uint256 debtAfter;
+    }
+
+    struct FinalizationParams {
+        address user;
+        address collateralAsset;
+        address payable collateralBeneficiary;
+        uint256 requestedTransfer;
+        uint256 repaidIcft;
+        uint256 repaidUsd;
+        uint256 seizedCollateralAmount;
+        uint256 debtAfter;
+    }
+
     bytes32 public constant ENGINE_ADMIN_ROLE = keccak256("ENGINE_ADMIN_ROLE");
-    /// @notice Role allowed to execute live liquidations.
     bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
 
-    /// @notice ICFT token used to repay debt during liquidations.
-    IERC20 public immutable icft;
-    /// @notice Lending pool against which liquidations are executed.
-    ILendingPool public immutable lendingPool;
+    IERC20 public icft;
+    ILendingPool public lendingPool;
 
-    /// @notice Total number of liquidation executions performed through this helper.
     uint256 public totalExecutions;
-    /// @notice Aggregate ICFT consumed across all executions.
     uint256 public totalRepaidIcft;
-    /// @notice Aggregate debt extinguished across all executions in internal USD units.
     uint256 public totalRepaidUsd;
-    /// @notice Aggregate ETH seized across all executions in wei.
-    uint256 public totalSeizedEth;
+    mapping(address => uint256) public totalSeizedByAsset;
 
-    /**
-     * @notice Creates the liquidation engine and grants the admin the initial operator role.
-     * @param admin Address that receives admin and engine roles.
-     * @param icft_ ICFT token address used for debt repayment.
-     * @param lendingPool_ Lending pool address that performs the core liquidation.
-     */
-    constructor(address admin, address icft_, address lendingPool_) {
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(address admin, address icft_, address lendingPool_) external initializer {
         if (admin == address(0) || icft_ == address(0) || lendingPool_ == address(0)) revert InvalidAddress();
+
+        __AccessControl_init();
+        __ReentrancyGuard_init();
 
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
         _grantRole(ENGINE_ADMIN_ROLE, admin);
@@ -60,118 +167,176 @@ contract LiquidationEngine is ILiquidationEngine, AccessControl, ReentrancyGuard
         lendingPool = ILendingPool(lendingPool_);
     }
 
-    /// @notice Accepts ETH transferred from the pool during liquidation settlement.
     receive() external payable {}
 
-    /// @inheritdoc ILiquidationEngine
-    function previewLiquidation(address user) external view returns (LiquidationPreview memory preview) {
+    function recoverNative(address payable recipient, uint256 amount) external onlyRole(ENGINE_ADMIN_ROLE) {
+        if (recipient == address(0)) revert InvalidAddress();
+        if (amount == 0) revert InvalidAmount();
+
+        (bool success,) = recipient.call{value: amount}("");
+        if (!success) revert EthTransferFailed();
+
+        emit NativeRecovered(recipient, amount);
+    }
+
+    function previewLiquidation(address user, address collateralAsset)
+        external
+        view
+        returns (LiquidationPreview memory preview)
+    {
         uint256 debtUsd = lendingPool.getDebt(user);
         bool liquidatable = lendingPool.isLiquidatable(user);
 
         preview.isLiquidatable = liquidatable;
+        preview.collateralAsset = collateralAsset;
         preview.debtUsd = debtUsd;
 
         if (!liquidatable || debtUsd == 0) {
             return preview;
         }
 
-        ILendingPool.Position memory position = lendingPool.getPosition(user);
-        IRiskEngine.LiquidationOutcome memory outcome =
-            IRiskEngine(lendingPool.riskEngine()).calculateLiquidation(position.collateralETH, debtUsd);
+        uint256 collateralBalance = lendingPool.getCollateralBalance(user, collateralAsset);
+        if (collateralBalance == 0) {
+            return preview;
+        }
 
-        preview.requiredIcft =
-            IPriceOracle(lendingPool.priceOracle()).convertUSDToICFT(outcome.debtToCoverUSD, true);
-        preview.collateralToSeizeEth = outcome.collateralToSeizeETH;
-        preview.collateralValueSeizedUsd = outcome.collateralValueSeizedUSD;
-        preview.resultingLtvBps = outcome.resultingLtvBps;
+        uint256 totalCollateralValueUsd = lendingPool.getCollateralValueUSD(user);
+        IRiskEngine.LiquidationOutcome memory genericOutcome =
+            IRiskEngine(lendingPool.riskEngine()).calculateLiquidation(totalCollateralValueUsd, debtUsd);
+
+        if (genericOutcome.debtToCoverUSD == 0 || genericOutcome.collateralValueSeizedUSD == 0) {
+            return preview;
+        }
+
+        uint256 assetValueUsd =
+            IRiskEngine(lendingPool.riskEngine()).getCollateralValueUSD(collateralAsset, collateralBalance);
+        uint256 desiredSeizedValueUsd =
+            genericOutcome.collateralValueSeizedUSD < assetValueUsd ? genericOutcome.collateralValueSeizedUSD : assetValueUsd;
+        uint256 seizeAmount =
+            IPriceOracle(lendingPool.priceOracle()).convertUSDToAsset(collateralAsset, desiredSeizedValueUsd, false);
+
+        if (seizeAmount == 0 && desiredSeizedValueUsd > 0) {
+            seizeAmount = 1;
+        }
+        if (seizeAmount > collateralBalance) {
+            seizeAmount = collateralBalance;
+        }
+
+        uint256 actualSeizedValueUsd =
+            IRiskEngine(lendingPool.riskEngine()).getCollateralValueUSD(collateralAsset, seizeAmount);
+        uint256 repaidUsd =
+            (actualSeizedValueUsd * 10_000) / (10_000 + IRiskEngine(lendingPool.riskEngine()).getLiquidationBonusBps());
+        uint256 remainingDebtUsd = debtUsd > repaidUsd ? debtUsd - repaidUsd : 0;
+        uint256 remainingCollateralValueUsd =
+            totalCollateralValueUsd > actualSeizedValueUsd ? totalCollateralValueUsd - actualSeizedValueUsd : 0;
+
+        preview.requiredIcft = IPriceOracle(lendingPool.priceOracle()).convertUSDToICFT(repaidUsd, true);
+        preview.collateralToSeizeAmount = seizeAmount;
+        preview.collateralValueSeizedUsd = actualSeizedValueUsd;
+        preview.resultingLtvBps =
+            IRiskEngine(lendingPool.riskEngine()).calculateLTV(remainingCollateralValueUsd, remainingDebtUsd);
     }
 
-    /// @inheritdoc ILiquidationEngine
-    function executeLiquidation(address user, uint256 maxIcftToRepay, address payable collateralBeneficiary)
-        external
-        nonReentrant
-        onlyRole(OPERATOR_ROLE)
-        returns (uint256 repaidIcft, uint256 repaidUsd, uint256 seizedEth)
+    function executeLiquidation(
+        address user,
+        address collateralAsset,
+        uint256 maxIcftToRepay,
+        address payable collateralBeneficiary
+    ) external nonReentrant onlyRole(OPERATOR_ROLE) returns (uint256 repaidIcft, uint256 repaidUsd, uint256 seizedCollateralAmount)
     {
         if (collateralBeneficiary == address(0)) revert InvalidAddress();
         if (maxIcftToRepay == 0) revert InvalidAmount();
 
-        // Snapshot balances and debt before execution so post-call deltas can reconstruct actual settlement.
-        LiquidationPreview memory preview = this.previewLiquidation(user);
-        uint256 debtBefore = lendingPool.getDebt(user);
-        uint256 ethBefore = address(this).balance;
-        uint256 icftBefore = icft.balanceOf(address(this));
-        uint256 requestedTransfer = preview.requiredIcft;
+        ExecutionSnapshot memory snapshot = _snapshotExecution(user, collateralAsset);
 
-        if (requestedTransfer > maxIcftToRepay) {
+        if (snapshot.requestedTransfer > maxIcftToRepay) {
             revert MaxRepayBelowRequired();
         }
 
-        if (requestedTransfer == 0) {
-            requestedTransfer = maxIcftToRepay;
+        if (snapshot.requestedTransfer == 0) {
+            snapshot.requestedTransfer = maxIcftToRepay;
         }
 
-        // Pull ICFT from the operator and grant the pool only the exact amount needed for this attempt.
-        icft.safeTransferFrom(msg.sender, address(this), requestedTransfer);
+        icft.safeTransferFrom(msg.sender, address(this), snapshot.requestedTransfer);
         icft.forceApprove(address(lendingPool), 0);
-        icft.forceApprove(address(lendingPool), requestedTransfer);
+        icft.forceApprove(address(lendingPool), snapshot.requestedTransfer);
 
-        // Execute liquidation through the pool, which returns seized ETH to this helper.
-        lendingPool.liquidate(user, maxIcftToRepay, address(this));
+        lendingPool.liquidate(user, collateralAsset, maxIcftToRepay, collateralBeneficiary);
 
-        uint256 debtAfter = lendingPool.getDebt(user);
+        ExecutionOutcome memory outcome = _computeOutcome(snapshot, user, collateralAsset);
+        repaidIcft = outcome.repaidIcft;
+        repaidUsd = outcome.repaidUsd;
+        seizedCollateralAmount = outcome.seizedCollateralAmount;
+        _finalizeExecution(
+            FinalizationParams({
+                user: user,
+                collateralAsset: collateralAsset,
+                collateralBeneficiary: collateralBeneficiary,
+                requestedTransfer: snapshot.requestedTransfer,
+                repaidIcft: repaidIcft,
+                repaidUsd: repaidUsd,
+                seizedCollateralAmount: seizedCollateralAmount,
+                debtAfter: outcome.debtAfter
+            })
+        );
+    }
+
+    function previewResultingLtv(address user) public view returns (uint256 ltvBps) {
+        return _previewResultingLtvFromDebt(user, lendingPool.getDebt(user));
+    }
+
+    function _snapshotExecution(address user, address collateralAsset)
+        internal
+        view
+        returns (ExecutionSnapshot memory snapshot)
+    {
+        snapshot.debtBefore = lendingPool.getDebt(user);
+        snapshot.collateralBefore = lendingPool.getCollateralBalance(user, collateralAsset);
+        snapshot.icftBefore = icft.balanceOf(address(this));
+        snapshot.requestedTransfer = this.previewLiquidation(user, collateralAsset).requiredIcft;
+    }
+
+    function _computeOutcome(ExecutionSnapshot memory snapshot, address user, address collateralAsset)
+        internal
+        view
+        returns (ExecutionOutcome memory outcome)
+    {
         uint256 icftAfter = icft.balanceOf(address(this));
-        uint256 ethAfter = address(this).balance;
-        uint256 refundIcft = icftAfter > icftBefore ? icftAfter - icftBefore : 0;
+        uint256 refundIcft = icftAfter > snapshot.icftBefore ? icftAfter - snapshot.icftBefore : 0;
 
-        repaidUsd = debtBefore > debtAfter ? debtBefore - debtAfter : 0;
-        repaidIcft = requestedTransfer - refundIcft;
-        seizedEth = ethAfter - ethBefore;
+        outcome.debtAfter = lendingPool.getDebt(user);
+        outcome.repaidUsd = snapshot.debtBefore > outcome.debtAfter ? snapshot.debtBefore - outcome.debtAfter : 0;
+        outcome.repaidIcft = snapshot.requestedTransfer - refundIcft;
 
+        uint256 collateralAfter = lendingPool.getCollateralBalance(user, collateralAsset);
+        outcome.seizedCollateralAmount =
+            snapshot.collateralBefore > collateralAfter ? snapshot.collateralBefore - collateralAfter : 0;
+    }
+
+    function _finalizeExecution(FinalizationParams memory params) internal {
         totalExecutions += 1;
-        totalRepaidIcft += repaidIcft;
-        totalRepaidUsd += repaidUsd;
-        totalSeizedEth += seizedEth;
+        totalRepaidIcft += params.repaidIcft;
+        totalRepaidUsd += params.repaidUsd;
+        totalSeizedByAsset[params.collateralAsset] += params.seizedCollateralAmount;
 
-        // Refund any unused ICFT in cases where the operator over-provisioned relative to actual settlement.
+        uint256 refundIcft = params.requestedTransfer - params.repaidIcft;
         if (refundIcft > 0) {
             icft.safeTransfer(msg.sender, refundIcft);
         }
 
-        // Forward the seized ETH to the requested beneficiary once settlement is complete.
-        if (seizedEth > 0) {
-            _sendEth(collateralBeneficiary, seizedEth);
-        }
-
         emit LiquidationExecuted(
-            user,
+            params.user,
             msg.sender,
-            collateralBeneficiary,
-            repaidIcft,
-            repaidUsd,
-            seizedEth,
-            previewResultingLtv(user)
+            params.collateralAsset,
+            params.collateralBeneficiary,
+            params.repaidIcft,
+            params.repaidUsd,
+            params.seizedCollateralAmount,
+            _previewResultingLtvFromDebt(params.user, params.debtAfter)
         );
     }
 
-    /**
-     * @notice Returns the current post-state LTV for a borrower.
-     * @param user Borrower address to inspect.
-     * @return ltvBps Current user LTV in basis points.
-     */
-    function previewResultingLtv(address user) public view returns (uint256) {
-        ILendingPool.Position memory position = lendingPool.getPosition(user);
-        uint256 debtUsd = lendingPool.getDebt(user);
-        return IRiskEngine(lendingPool.riskEngine()).calculateLTV(position.collateralETH, debtUsd);
-    }
-
-    /**
-     * @notice Forwards ETH and reverts on failure.
-     * @param recipient Address receiving ETH.
-     * @param amount ETH amount in wei.
-     */
-    function _sendEth(address payable recipient, uint256 amount) internal {
-        (bool success,) = recipient.call{value: amount}("");
-        if (!success) revert EthTransferFailed();
+    function _previewResultingLtvFromDebt(address user, uint256 debtUsd) internal view returns (uint256 ltvBps) {
+        return IRiskEngine(lendingPool.riskEngine()).calculateLTV(lendingPool.getCollateralValueUSD(user), debtUsd);
     }
 }

@@ -79,4 +79,23 @@ contract PriceOracleTest is ProtocolFixture {
         assertEq(roundDown, 1e18);
         assertEq(roundUp, 1e18 + 1);
     }
+
+    function testConvertWbtcToUsdUsesTokenDecimals() public view {
+        uint256 oneWbtc = 1 * 10 ** wbtc.decimals();
+        assertEq(oracle.convertAssetToUSD(address(wbtc), oneWbtc), 60_000e18);
+    }
+
+    function testConvertWstethToUsdUsesTokenDecimals() public view {
+        assertEq(oracle.convertAssetToUSD(address(wsteth), 1 ether), 2_200e18);
+    }
+
+    function testNativeAssetRemainsSupportedThroughGenericApi() public view {
+        assertTrue(oracle.isCollateralAssetSupported(NATIVE_ASSET));
+        assertEq(oracle.convertAssetToUSD(NATIVE_ASSET, 1 ether), 2_000e18);
+    }
+
+    function testWstethIsSupportedThroughGenericApi() public view {
+        assertTrue(oracle.isCollateralAssetSupported(address(wsteth)));
+        assertEq(oracle.getAssetUSDPrice(address(wsteth)), 2_200e18);
+    }
 }
